@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>AdvancedAgilityPack</id>
+    <version>1.0.0</version>
+    <title>Advanced Agility Pack</title>
+    <authors>me_000</authors>
+    <owners>me_000</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extends the HAP ( HTML Agility Pack )</description>
+    <dependencies>
+      <dependency id="HtmlAgilityPack" version="1.4.6" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="" />
+    </frameworkAssemblies>
+  </metadata>
+</package>
