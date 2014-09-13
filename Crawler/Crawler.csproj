@@ -49,9 +49,9 @@
   <ItemGroup>
     <Compile Include="Crawler.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="IPrioritizer.cs" />
+    <Compile Include="IURLFrontier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimplePrioritizer.cs" />
+    <Compile Include="SimpleURLFrontier.cs" />
     <Compile Include="Store.cs" />
     <Compile Include="UriNormalizer.cs" />
     <Compile Include="WebPage.cs" />

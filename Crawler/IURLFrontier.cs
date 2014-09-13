@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WebCrawler
 {
-    interface IURLFrontier
+    interface IUrlFrontier
     {
         Uri GetUri();
 

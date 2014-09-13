@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace WebCrawler
 {
-    class SimplePrioritizer : IPrioritizer
+    class SimpleUrlFrontier : IUrlFrontier
     {
         private Queue<Uri> queue;
         private Dictionary<string, object> addedPages;
 
-        public SimplePrioritizer(string seeds)
+        public SimpleUrlFrontier(string seeds)
         {
             addedPages = new Dictionary<string, object>();
             queue = Helper.GetSeeds(seeds);

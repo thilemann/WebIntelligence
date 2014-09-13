@@ -16,14 +16,14 @@ namespace WebCrawler
         private const int TIME_BETWEEN_VISITS = 1; // Seconds
 
         private Store store;
-        private IURLFrontier _iurlFrontier;
+        private IUrlFrontier urlFrontier;
         private WebPage webpage;
         private Dictionary<IPAddress, DateTime> visitedServers;
 
         public Crawler(string seeds)
         {
             visitedServers = new Dictionary<IPAddress, DateTime>();
-            _iurlFrontier = new SimpleURLFrontier(seeds);
+            urlFrontier = new SimpleUrlFrontier(seeds);
             store = new Store();
         }
 
@@ -31,9 +31,9 @@ namespace WebCrawler
         {
             Console.WriteLine("Starting...");
             int count = 0;
-            while (!_iurlFrontier.IsEmpty() && count < limit)
+            while (!urlFrontier.IsEmpty() && count < limit)
             {
-                webpage = new WebPage(_iurlFrontier.GetUri());
+                webpage = new WebPage(urlFrontier.GetUri());
 
                 // Is it safe to visit the webpage?
                 int delay = DelayVisit(webpage.Address);
@@ -51,7 +51,7 @@ namespace WebCrawler
 
                 store.WriteFile(webpage);
 
-                _iurlFrontier.AddUriRange(webpage.GetAnchors());
+                urlFrontier.AddUriRange(webpage.GetAnchors());
 
                 // make sure to update or add time for visit to the dictionary
                 if (visitedServers.ContainsKey(webpage.Address))
