@@ -7,22 +7,40 @@ using System.Threading.Tasks;
 
 namespace WebCrawler
 {
-    class UriNormalizer
+    static class UriNormalizer
     {
-        private string url;
-        private Regex relativeRegex = new Regex(@"/?.*");
-        public bool IsRelative { get; private set; }
+        private const string HTTP = "http://";
+        private const string HTTPS = "https://";
 
-        public UriNormalizer(string url)
+        private static string EnsureProtocol(string url)
         {
-            this.url = url;
+            if (!url.StartsWith(HTTP) && !url.StartsWith(HTTPS))
+                url = string.Format("{0}{1}", HTTP, url);
+
+            return url;
         }
 
-        public Uri Normalize()
+        public static Uri Normalize(string currentDomain, string url)
         {
-            url = url.ToLower();
+            Uri uri;
+            // Check if url is an internal anchor, if so we return the current domain
+            if (url.StartsWith("#"))
+            {
+                uri = new Uri(EnsureProtocol(currentDomain));
+                return uri;
+            }
 
-            return null;
+            // Test if url is relative, if so we combine it with the domain
+            if (Uri.TryCreate(url, UriKind.Relative, out uri))
+            {
+                uri = new Uri(new Uri(EnsureProtocol(currentDomain)), url);
+            }
+            else
+            {
+                uri = new Uri(EnsureProtocol(url));
+            }
+
+            return uri;
         }
     }
 }
