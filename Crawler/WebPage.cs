@@ -72,6 +72,9 @@ namespace WebCrawler
             HtmlNodeCollection anchors = html.DocumentNode.SelectNodes("//a");
             List<Uri> hrefs = new List<Uri>();
 
+            if (anchors == null)
+                return hrefs;
+
             foreach (var anchor in anchors)
             {
                 if (!anchor.Attributes.Contains("href"))
@@ -80,7 +83,10 @@ namespace WebCrawler
                 string path = anchor.Attributes["href"].Value;
                 try
                 {
-                    hrefs.Add(new Uri(path));
+                    if (path.Contains("javascript:"))
+                        continue;
+
+                    hrefs.Add(UriNormalizer.Normalize(uri.DnsSafeHost, path));
                 }
                 catch (Exception)
                 {
