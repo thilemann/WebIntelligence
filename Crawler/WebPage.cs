@@ -28,6 +28,7 @@ namespace WebCrawler.Crawl
 
         public WebPage(Uri uri)
         {
+            _logger = Log.Instance;
             _uri = uri;
             _html = new HtmlDocument();
             try
@@ -42,7 +43,6 @@ namespace WebCrawler.Crawl
                 _logger.Write(LogLevel.Error, e.ToString());
             }
             IsLoaded = false;
-            _logger = Log.Instance;
         }
 
         public void LoadPage()
