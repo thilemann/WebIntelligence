@@ -12,12 +12,16 @@ namespace WebCrawler
         private const string HTTP = "http://";
         private const string HTTPS = "https://";
 
-        private Dictionary<string, Politeness> politenesses = new Dictionary<string, Politeness>();
-        public Uri Domain { get; set; }
+        private Dictionary<string, Politeness> politenesses;
+
         public List<string> Sitemaps { get; set; }
+        public Uri Domain { get; set; }
 
         public RobotsTxt(string domain)
         {
+            politenesses = new Dictionary<string, Politeness>();
+            Sitemaps = new List<string>();
+
             if (!domain.StartsWith(HTTP) && !domain.StartsWith(HTTPS))
                 domain = string.Format("{0}{1}", HTTP, domain);
 
