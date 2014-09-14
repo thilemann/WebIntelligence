@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,18 +23,64 @@ namespace WebCrawler.Crawl
 
         private readonly Store _store;
         private readonly IUrlFrontier _urlFrontier;
-        private readonly Dictionary<IPAddress, DateTime> _visitedServers;
+        private readonly ConcurrentDictionary<IPAddress, DateTime> _visitedServers;
         private readonly Parser _parser;
-        private readonly Dictionary<string, RobotsTxt> _robotsTxts;
+        private readonly ConcurrentDictionary<string, RobotsTxt> _robotsTxts;
 
         public Crawler(string seeds)
         {
             _logger = Log.Instance;
-            _visitedServers = new Dictionary<IPAddress, DateTime>();
+            _visitedServers = new ConcurrentDictionary<IPAddress, DateTime>();
             _urlFrontier = new SimpleUrlFrontier(seeds);
             _store = new Store();
             _parser = new Parser();
-            _robotsTxts = new Dictionary<string, RobotsTxt>();
+            _robotsTxts = new ConcurrentDictionary<string, RobotsTxt>();
+        }
+
+        public void Start()
+        {
+            _statistics = new Statistics(1000);
+            Console.WriteLine("Starting Threads");
+            var background = Task.Factory.StartNew(process);
+
+            while (_statistics.PagesCrawled <= 1000)
+            {
+            }
+            _urlFrontier.Queue.CompleteAdding();
+            background.Wait();
+
+        }
+
+        void process()
+        {
+            Parallel.ForEach(_urlFrontier.Queue.GetConsumingEnumerable(), processUri);
+        }
+
+        void processUri(Uri uri)
+        {
+            if (uri == null)
+                return;
+            WebPage webpage = new WebPage(_urlFrontier.GetUri());
+
+            // Is it safe to visit the webpage?
+            if (!EnsurePoliteVisit(webpage)) return;
+
+            // Visit webpage
+            webpage.LoadPage();
+
+            // make sure to update or add time for visit to the dictionary
+            UpdateTimestamp(webpage);
+
+            // Add webpage anchors to the queue
+            if (!webpage.IsLoaded)
+                return;
+
+            _store.WriteFile(webpage);
+
+            // Add extracted anchors to the queue
+            _urlFrontier.AddUriRange(webpage.GetAnchors());
+
+            _statistics.IncrementPagesCrawled();
         }
 
         public void Start(int limit = 1000)
@@ -65,7 +112,7 @@ namespace WebCrawler.Crawl
                 // Add extracted anchors to the queue
                 _urlFrontier.AddUriRange(webpage.GetAnchors());
 
-                _statistics.PagesCrawled++;
+                _statistics.IncrementPagesCrawled();
             }
 
             _store.WriteFileMap();
@@ -73,7 +120,7 @@ namespace WebCrawler.Crawl
             _logger.Write(LogLevel.Info, "Crawl Finished");
             _logger.Write(LogLevel.Info, "");
         }
-
+        
         private bool EnsurePoliteVisit(WebPage webpage)
         {
             // Check robotstxt to see if we can visit the page
@@ -82,7 +129,7 @@ namespace WebCrawler.Crawl
             if (!_robotsTxts.ContainsKey(hostname))
             {
                 robotsTxt = _parser.Parse(hostname);
-                _robotsTxts.Add(hostname, robotsTxt);
+                _robotsTxts.TryAdd(hostname, robotsTxt);
             }
             else
             {
@@ -122,7 +169,7 @@ namespace WebCrawler.Crawl
             }
             else
             {
-                _visitedServers.Add(webpage.Address, nextValidVisitTime);
+                _visitedServers.TryAdd(webpage.Address, nextValidVisitTime);
             }
         }
         

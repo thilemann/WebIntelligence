@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,18 +10,22 @@ namespace WebCrawler.Crawl
 {
     class SimpleUrlFrontier : IUrlFrontier
     {
-        private readonly Queue<Uri> _queue;
-        private readonly Dictionary<string, object> _addedPages;
+        //private readonly ConcurrentQueue<Uri> Queue;
+        private readonly ConcurrentDictionary<string, object> _addedPages;
 
         public SimpleUrlFrontier(string seeds)
         {
-            _addedPages = new Dictionary<string, object>();
-            _queue = Helper.GetSeeds(seeds);
+            _addedPages = new ConcurrentDictionary<string, object>();
+            Queue = Helper.GetSeeds(seeds);
         }
+
+        public BlockingCollection<Uri> Queue { get; set; }
 
         public Uri GetUri()
         {
-            return _queue.Dequeue();
+            Uri uri = null;
+            //Queue.TryDequeue(out uri);
+            return uri;
         }
 
         public void AddUri(Uri uri)
@@ -30,11 +35,10 @@ namespace WebCrawler.Crawl
 
         private void SafeAddUri(Uri uri)
         {
-
             if (!_addedPages.ContainsKey(uri.AbsoluteUri))
             {
-                _queue.Enqueue(uri);
-                _addedPages.Add(uri.AbsoluteUri, null);
+                Queue.Add(uri);
+                _addedPages.TryAdd(uri.AbsoluteUri, null);
             }
         }
 
@@ -48,7 +52,7 @@ namespace WebCrawler.Crawl
 
         public bool IsEmpty()
         {
-            return _queue.Count == 0;
+            return Queue.Count == 0;
         }
     }
 
