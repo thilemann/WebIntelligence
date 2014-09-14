@@ -14,7 +14,7 @@ namespace WebCrawler.Crawl
 {
     public class Crawler
     {
-        private const int TIME_BETWEEN_VISITS = 1; // Seconds
+        private const int TIME_BETWEEN_VISITS = 1; // Seconds - minimum time between each visit
 
         private Timer _statisticallyTimer;
         private Statistics _statistics;
