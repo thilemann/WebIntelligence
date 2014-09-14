@@ -17,7 +17,6 @@ namespace WebCrawler
 
         private Store store;
         private IUrlFrontier urlFrontier;
-        private WebPage webpage;
         private Dictionary<IPAddress, DateTime> visitedServers;
 
         public Crawler(string seeds)
@@ -33,7 +32,7 @@ namespace WebCrawler
             int count = 0;
             while (!urlFrontier.IsEmpty() && count < limit)
             {
-                webpage = new WebPage(urlFrontier.GetUri());
+                WebPage webpage = new WebPage(urlFrontier.GetUri());
 
                 // Is it safe to visit the webpage?
                 int delay = DelayVisit(webpage.Address);
