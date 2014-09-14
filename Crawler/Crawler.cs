@@ -36,14 +36,26 @@ namespace WebCrawler
 
                 // Is it safe to visit the webpage?
                 int delay = DelayVisit(webpage.Address);
-                if (delay < SLEEP)
+                if (delay > 0)
                 {
-                    Console.WriteLine("Waiting for visit: {0} ms", SLEEP - delay);
-                    //Thread.Sleep(SLEEP - delay);
+                    Console.WriteLine("Waiting for visit: {0} ms", delay);
+                    Thread.Sleep(delay);
                 }
 
                 // Visit webpage
                 webpage.LoadPage();
+
+                // make sure to update or add time for visit to the dictionary
+                DateTime nextValidVisitTime = DateTime.Now.AddSeconds(TIME_BETWEEN_VISITS);
+                if (visitedServers.ContainsKey(webpage.Address))
+                {
+                    visitedServers[webpage.Address] = nextValidVisitTime;
+                }
+                else
+                {
+                    visitedServers.Add(webpage.Address, nextValidVisitTime);
+                }
+
                 // Add webpage anchors to the queue
                 if (!webpage.IsLoaded)
                     continue;
@@ -51,16 +63,6 @@ namespace WebCrawler
                 store.WriteFile(webpage);
 
                 urlFrontier.AddUriRange(webpage.GetAnchors());
-
-                // make sure to update or add time for visit to the dictionary
-                if (visitedServers.ContainsKey(webpage.Address))
-                {
-                    visitedServers[webpage.Address] = DateTime.Now;
-                }
-                else
-                {
-                    visitedServers.Add(webpage.Address, DateTime.Now);
-                }
                 count++;
             }
 
@@ -72,12 +74,12 @@ namespace WebCrawler
             if (visitedServers.ContainsKey(address))
             {
                 DateTime now = DateTime.Now;
-                DateTime then = visitedServers[address];
+                DateTime safeVisit = visitedServers[address];
 
-                return (int) now.Subtract(then).TotalMilliseconds;
+                return (int) safeVisit.Subtract(now).TotalMilliseconds;
 
             }
-            return SLEEP;
+            return 0;
         }
         
     }
