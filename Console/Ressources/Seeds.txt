@@ -1,0 +1,4 @@
+﻿http://www.nytimes.com
+http://www.bbc.com
+http://www.theguardian.com
+http://www.thetimes.co.uk
