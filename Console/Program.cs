@@ -11,7 +11,11 @@ namespace WebCrawler
         static void Main(string[] args)
         {
             Crawler crawler = new Crawler("Ressources\\Seeds.txt");
+            Console.WriteLine("Starting...");
+            DateTime startTime = DateTime.Now;
             crawler.Start();
+            DateTime endTime = DateTime.Now;
+            Console.WriteLine("Finished crawling {0} pages in {1}", crawler.CrawledPages, endTime.Subtract(startTime));
 
             //Uri uri = new Uri("http://www.kabelchristensen.dk/Sitemap");
             //Sitemap smap = new Sitemap(uri);

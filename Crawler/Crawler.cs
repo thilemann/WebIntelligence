@@ -18,7 +18,15 @@ namespace WebCrawler
         private readonly IUrlFrontier _urlFrontier;
         private readonly Dictionary<IPAddress, DateTime> _visitedServers;
         private readonly RobotsTxtParser _robotsTxtParser;
-        private readonly Dictionary<string, RobotsTxt> _robotsTxts; 
+        private readonly Dictionary<string, RobotsTxt> _robotsTxts;
+
+        private int _count;
+        public int CrawledPages { 
+            get
+            {
+                return _count;
+            } 
+        }
 
         public Crawler(string seeds)
         {
@@ -27,13 +35,13 @@ namespace WebCrawler
             _store = new Store();
             _robotsTxtParser = new RobotsTxtParser();
             _robotsTxts = new Dictionary<string, RobotsTxt>();
+
+            _count = 0;
         }
 
         public void Start(int limit = 5)
         {
-            Console.WriteLine("Starting...");
-            int count = 0;
-            while (!_urlFrontier.IsEmpty() && count < limit)
+            while (!_urlFrontier.IsEmpty() && _count < limit)
             {
                 WebPage webpage = new WebPage(_urlFrontier.GetUri());
 
@@ -55,7 +63,7 @@ namespace WebCrawler
                 // Add extracted anchors to the queue
                 _urlFrontier.AddUriRange(webpage.GetAnchors());
 
-                count++;
+                _count++;
             }
 
             _store.WriteFileMap();
