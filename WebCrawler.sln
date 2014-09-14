@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RobotsParser", "RobotsParser\RobotsParser.csproj", "{9783FA54-7F69-48C3-BA7A-D29E39975BDB}"
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.RobotsTxtParser", "RobotsParser\WebCrawler.RobotsTxtParser.csproj", "{9783FA54-7F69-48C3-BA7A-D29E39975BDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crawler", "Crawler\Crawler.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Crawler", "Crawler\WebCrawler.Crawler.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CrawledPages", "CrawledPages\CrawledPages.sqlproj", "{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{D3DE7617-6F54-4153-A34F-D5992ADAE840}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Console", "Console\WebCrawler.Console.csproj", "{D3DE7617-6F54-4153-A34F-D5992ADAE840}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Logger", "Log\WebCrawler.Logger.csproj", "{2E0D013B-659F-4712-BE97-6609B5B52F1C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +35,10 @@ Global
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

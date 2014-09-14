@@ -7,41 +7,43 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Net;
 using System.Threading;
+using WebCrawler.Logger;
+using WebCrawler.RobotsTxtParser;
 
-namespace WebCrawler
+namespace WebCrawler.Crawl
 {
     public class Crawler
     {
         private const int TIME_BETWEEN_VISITS = 1; // Seconds
 
+        private Timer _statisticallyTimer;
+        private Statistics _statistics;
+        private readonly Log _logger;
+
         private readonly Store _store;
         private readonly IUrlFrontier _urlFrontier;
         private readonly Dictionary<IPAddress, DateTime> _visitedServers;
-        private readonly RobotsTxtParser _robotsTxtParser;
+        private readonly Parser _parser;
         private readonly Dictionary<string, RobotsTxt> _robotsTxts;
-
-        private int _count;
-        public int CrawledPages { 
-            get
-            {
-                return _count;
-            } 
-        }
 
         public Crawler(string seeds)
         {
+            _logger = Log.Instance;
             _visitedServers = new Dictionary<IPAddress, DateTime>();
             _urlFrontier = new SimpleUrlFrontier(seeds);
             _store = new Store();
-            _robotsTxtParser = new RobotsTxtParser();
+            _parser = new Parser();
             _robotsTxts = new Dictionary<string, RobotsTxt>();
-
-            _count = 0;
         }
 
-        public void Start(int limit = 5)
+        public void Start(int limit = 1000)
         {
-            while (!_urlFrontier.IsEmpty() && _count < limit)
+            _logger.Write(LogLevel.Info, "Crawl started");
+            _statistics = new Statistics(limit);
+            TimerCallback callback = _statistics.ReportStatistics;
+            _statisticallyTimer = new Timer(callback, null, 1000, 1000);
+
+            while (!_urlFrontier.IsEmpty() && _statistics.PagesCrawled < limit)
             {
                 WebPage webpage = new WebPage(_urlFrontier.GetUri());
 
@@ -63,10 +65,13 @@ namespace WebCrawler
                 // Add extracted anchors to the queue
                 _urlFrontier.AddUriRange(webpage.GetAnchors());
 
-                _count++;
+                _statistics.PagesCrawled++;
             }
 
             _store.WriteFileMap();
+            _statisticallyTimer.Dispose();
+            _logger.Write(LogLevel.Info, "Crawl Finished");
+            _logger.Write(LogLevel.Info, "");
         }
 
         private bool EnsurePoliteVisit(WebPage webpage)
@@ -76,7 +81,7 @@ namespace WebCrawler
             RobotsTxt robotsTxt;
             if (!_robotsTxts.ContainsKey(hostname))
             {
-                robotsTxt = _robotsTxtParser.Parse(hostname);
+                robotsTxt = _parser.Parse(hostname);
                 _robotsTxts.Add(hostname, robotsTxt);
             }
             else
@@ -96,10 +101,13 @@ namespace WebCrawler
 
                 int delay = (int) safeVisit.Subtract(now).TotalMilliseconds;
 
+                Console.SetCursorPosition(0, 4);
                 if (delay > 0)
                 {
-                    Console.WriteLine("Waiting for visit: {0} ms", delay);
+                    Console.WriteLine("Waiting {0} ms before visiting", delay);
                     Thread.Sleep(delay);
+                    Console.SetCursorPosition(0, 4);
+                    Console.WriteLine();
                 }
             }
             return true;

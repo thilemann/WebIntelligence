@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebCrawler
+namespace WebCrawler.Crawl
 {
     public class Helper
     {
@@ -36,7 +37,16 @@ namespace WebCrawler
 
         public static IPAddress ResolveDNS(string hostName)
         {
-            return Dns.GetHostEntry(hostName).AddressList.FirstOrDefault();
+            IPAddress address;
+            try
+            {
+                address = Dns.GetHostEntry(hostName).AddressList.FirstOrDefault();
+            }
+            catch (SocketException e)
+            {
+                throw e;
+            }
+            return address;
         }
     }
 }

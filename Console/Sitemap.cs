@@ -117,19 +117,19 @@ namespace WebCrawler
             switch (value.ToLower().Trim())
             {
                 case "always":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Always;
+                    return Sitemap.ChangeFreqEnum.Always;
                 case "hourly":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Hourly;
+                    return Sitemap.ChangeFreqEnum.Hourly;
                 case "daily":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Daily;
+                    return Sitemap.ChangeFreqEnum.Daily;
                 case "weekly":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Weekly;
+                    return Sitemap.ChangeFreqEnum.Weekly;
                 case "monthly":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Monthly;
+                    return Sitemap.ChangeFreqEnum.Monthly;
                 case "yearly":
-                    return WebCrawler.Sitemap.ChangeFreqEnum.Yearly;
+                    return Sitemap.ChangeFreqEnum.Yearly;
             }
-            return WebCrawler.Sitemap.ChangeFreqEnum.Never;
+            return Sitemap.ChangeFreqEnum.Never;
         }
 
         public class SitemapUrl

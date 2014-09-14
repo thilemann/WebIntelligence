@@ -6,35 +6,48 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System.Net;
 using System.IO;
+using WebCrawler.Logger;
 
-namespace WebCrawler
+namespace WebCrawler.Crawl
 {
     public class WebPage
     {
-        private HtmlDocument html;
-        private Uri uri;
+        private readonly HtmlDocument _html;
+        private readonly Log _logger;
+        private Uri _uri;
 
         public IPAddress Address { get; private set; }
 
         public Uri Uri
         {
-            get { return uri; }
-            set { uri = value; }
+            get { return _uri; }
+            set { _uri = value; }
         }
 
         public bool IsLoaded { get; private set; }
 
         public WebPage(Uri uri)
         {
-            this.uri = uri;
-            html = new HtmlDocument();
-            Address = Helper.ResolveDNS(uri.DnsSafeHost);
+            _uri = uri;
+            _html = new HtmlDocument();
+            try
+            {
+                Address = Helper.ResolveDNS(uri.DnsSafeHost);
+            }
+            catch (Exception e)
+            {
+                Address = new IPAddress(new byte[] { 0, 0, 0, 0 });
+                _logger.Write(LogLevel.Error, "WebPage: DNS Resolving failed");
+                _logger.Write(LogLevel.Error, uri.DnsSafeHost);
+                _logger.Write(LogLevel.Error, e.ToString());
+            }
             IsLoaded = false;
+            _logger = Log.Instance;
         }
 
         public void LoadPage()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_uri);
 
             // Sends the HttpWebRequest and waits for the response.
             HttpWebResponse response;
@@ -44,7 +57,9 @@ namespace WebCrawler
             }
             catch (WebException e)
             {
-                Console.WriteLine(e.ToString());
+                _logger.Write(LogLevel.Error, "WebPage: Could not load page");
+                _logger.Write(LogLevel.Error, _uri.AbsoluteUri);
+                _logger.Write(LogLevel.Error, e.ToString());
                 return;
             }
 
@@ -55,21 +70,22 @@ namespace WebCrawler
             // Pipes the stream to a higher level stream reader with the required encoding format. 
             StreamReader reader = new StreamReader(stream, encoding);
 
-            html.LoadHtml(reader.ReadToEnd());
+            _html.LoadHtml(reader.ReadToEnd());
 
-            Console.WriteLine("Visited: {0}", uri.AbsoluteUri);
+            Console.SetCursorPosition(0, 3);
+            Console.WriteLine("Visited: {0}", _uri.AbsoluteUri);
 
             IsLoaded = true;
         }
 
         public void SavePage(string filePath)
         {
-            html.Save(filePath, Encoding.UTF8);
+            _html.Save(filePath, Encoding.UTF8);
         }
 
         public List<Uri> GetAnchors()
         {
-            HtmlNodeCollection anchors = html.DocumentNode.SelectNodes("//a");
+            HtmlNodeCollection anchors = _html.DocumentNode.SelectNodes("//a");
             List<Uri> hrefs = new List<Uri>();
 
             if (anchors == null)
@@ -86,11 +102,13 @@ namespace WebCrawler
                     if (path.Contains("javascript:"))
                         continue;
 
-                    hrefs.Add(UriNormalizer.Normalize(uri.DnsSafeHost, path));
+                    hrefs.Add(UriNormalizer.Normalize(_uri.DnsSafeHost, path));
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine("ERROR: " + path);
+                    _logger.Write(LogLevel.Error, "WebPage: Could not Normalize url or is not valid for an Uri instance");
+                    _logger.Write(LogLevel.Error, path);
+                    _logger.Write(LogLevel.Error, e.ToString());
                 }
             }
             return hrefs;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WebCrawler.Crawl;
 
 namespace WebCrawler
 {
@@ -12,10 +13,8 @@ namespace WebCrawler
         {
             Crawler crawler = new Crawler("Ressources\\Seeds.txt");
             Console.WriteLine("Starting...");
-            DateTime startTime = DateTime.Now;
             crawler.Start();
-            DateTime endTime = DateTime.Now;
-            Console.WriteLine("Finished crawling {0} pages in {1}", crawler.CrawledPages, endTime.Subtract(startTime));
+            Console.WriteLine("Finished crawling...");
 
             //Uri uri = new Uri("http://www.kabelchristensen.dk/Sitemap");
             //Sitemap smap = new Sitemap(uri);

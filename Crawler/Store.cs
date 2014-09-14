@@ -5,38 +5,38 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace WebCrawler
+namespace WebCrawler.Crawl
 {
     public class Store
     {
-        private string outputPath;
-        private Dictionary<string, string> map;
+        private readonly string _outputPath;
+        private readonly Dictionary<string, string> _fileToDomainMap;
 
         public Store()
         {
             DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "pages"));
-            outputPath = directoryInfo.ToString();
-            map = new Dictionary<string, string>();
+            _outputPath = directoryInfo.ToString();
+            _fileToDomainMap = new Dictionary<string, string>();
         }
 
         public void WriteFile(WebPage page)
         {
-            if (map.ContainsKey(page.Uri.AbsoluteUri))
+            if (_fileToDomainMap.ContainsKey(page.Uri.AbsoluteUri))
                 return;
 
             Guid guid = Guid.NewGuid();
             string fileName = guid.ToString() + ".html";
 
-            page.SavePage(Path.Combine(outputPath, fileName));
+            page.SavePage(Path.Combine(_outputPath, fileName));
 
-            map.Add(page.Uri.AbsoluteUri, fileName);
+            _fileToDomainMap.Add(page.Uri.AbsoluteUri, fileName);
         }
 
         public void WriteFileMap()
         {
-            using(StreamWriter writer = new StreamWriter(File.Open(Path.Combine(outputPath, "_filemap.csv"), FileMode.OpenOrCreate)))
+            using(StreamWriter writer = new StreamWriter(File.Open(Path.Combine(_outputPath, "_filemap.csv"), FileMode.OpenOrCreate)))
             {
-                foreach (var pair in map)
+                foreach (var pair in _fileToDomainMap)
                 {
                     writer.WriteLine(pair.Key.ToString() + ";" + pair.Value);
                 }
@@ -46,13 +46,13 @@ namespace WebCrawler
 
         public void LoadFileMap()
         {
-            using (StreamReader reader = new StreamReader(File.Open(Path.Combine(outputPath, "_filemap.csv"), FileMode.OpenOrCreate)))
+            using (StreamReader reader = new StreamReader(File.Open(Path.Combine(_outputPath, "_filemap.csv"), FileMode.OpenOrCreate)))
             {
                 while (!reader.EndOfStream)
                 {
                     string[] array = reader.ReadLine().Split(';');
 
-                    map.Add(array[0], array[1]);
+                    _fileToDomainMap.Add(array[0], array[1]);
                 }
             }
 

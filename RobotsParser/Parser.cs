@@ -8,10 +8,11 @@ using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using WebCrawler.Logger;
 
-namespace WebCrawler
+namespace WebCrawler.RobotsTxtParser
 {
-    public class RobotsTxtParser
+    public class Parser
     {
         private const string ROBOT_TXT = "robots.txt";
 
@@ -22,7 +23,6 @@ namespace WebCrawler
         
         public RobotsTxt Parse(string domainUrl)
         {
-
             RobotsTxt robotTxt = new RobotsTxt(domainUrl);
             Uri uri = new Uri(robotTxt.Domain, ROBOT_TXT);
             Politeness currentPoliteness = null;
@@ -96,6 +96,8 @@ namespace WebCrawler
             }
             catch (WebException e)
             {
+                Log.Instance.Write(LogLevel.Error, string.Format("Parser.cs: Could not get stream for '{0}", uri.DnsSafeHost));
+                Log.Instance.Write(LogLevel.Error, e.ToString());
             }
             return reader;
         }

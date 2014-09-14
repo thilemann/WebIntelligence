@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace WebCrawler
+namespace WebCrawler.Crawl
 {
     static class UriNormalizer
     {
@@ -23,6 +23,7 @@ namespace WebCrawler
         public static Uri Normalize(string currentDomain, string url)
         {
             Uri uri;
+            url = url.Trim();
             // Check if url is an internal anchor, if so we return the current domain
             if (url.StartsWith("#"))
             {
