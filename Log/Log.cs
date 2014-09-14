@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebCrawler.Logger
@@ -11,13 +12,19 @@ namespace WebCrawler.Logger
     public class Log
     {
         private const string LOGFILE_PATH = "crawler.log";
-        private const string TIMESTAMP_PATTERN = "dd-MM-yyyy SS:mm:ss";
+        private const string TIMESTAMP_PATTERN = "dd-MM-yyyy HH:mm:ss";
+        private static Mutex logMutex = new Mutex();
 
         private static Log _instance;
         public static Log Instance { 
             get
             {
-                return _instance ?? (_instance = new Log());
+                logMutex.WaitOne();
+                if (_instance == null)
+                    _instance = new Log();
+                logMutex.ReleaseMutex();
+
+                return _instance;
             }
         }
 
@@ -29,7 +36,9 @@ namespace WebCrawler.Logger
 
         public void Write(LogLevel level, string msg)
         {
+            logMutex.WaitOne();
             Debug.WriteLine("[{0}] {1}\t{2}", DateTime.Now.ToString(TIMESTAMP_PATTERN), level, msg);
+            logMutex.ReleaseMutex();
         }
     }
 }
