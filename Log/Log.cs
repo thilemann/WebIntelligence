@@ -13,16 +13,13 @@ namespace WebCrawler.Logger
     {
         private const string LOGFILE_PATH = "crawler.log";
         private const string TIMESTAMP_PATTERN = "dd-MM-yyyy HH:mm:ss";
-        private static Mutex logMutex = new Mutex();
 
         private static Log _instance;
         public static Log Instance { 
             get
             {
-                logMutex.WaitOne();
                 if (_instance == null)
                     _instance = new Log();
-                logMutex.ReleaseMutex();
 
                 return _instance;
             }
@@ -36,9 +33,7 @@ namespace WebCrawler.Logger
 
         public void Write(LogLevel level, string msg)
         {
-            logMutex.WaitOne();
             Debug.WriteLine("[{0}] {1}\t{2}", DateTime.Now.ToString(TIMESTAMP_PATTERN), level, msg);
-            logMutex.ReleaseMutex();
         }
     }
 }
