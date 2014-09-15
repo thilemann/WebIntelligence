@@ -13,14 +13,15 @@ using WebCrawler.RobotsTxtParser;
 
 namespace WebCrawler.Crawl
 {
-    public class Crawler
+    public class Crawler : IDisposable
     {
         private const int TIME_BETWEEN_VISITS = 1; // Seconds - minimum time between each visit
 
         private Timer _statisticallyTimer;
         private Statistics _statistics;
-        private readonly Log _logger;
+        private CancellationTokenSource _cts;
 
+        private readonly Log _logger;
         private readonly Store _store;
         private readonly IUrlFrontier _urlFrontier;
         private readonly ConcurrentDictionary<IPAddress, DateTime> _visitedServers;
@@ -35,32 +36,75 @@ namespace WebCrawler.Crawl
             _store = new Store();
             _parser = new Parser();
             _robotsTxts = new ConcurrentDictionary<string, RobotsTxt>();
+            _cts = new CancellationTokenSource();
         }
 
         public void Start()
         {
-            _statistics = new Statistics(1000);
-            Console.WriteLine("Starting Threads");
-            var background = Task.Factory.StartNew(process);
-
-            while (_statistics.PagesCrawled <= 1000)
-            {
-            }
-            _urlFrontier.Queue.CompleteAdding();
-            background.Wait();
-
+            Start(Statistics.NO_LIMIT);
         }
 
-        void process()
+        public void Start(int limit)
         {
-            Parallel.ForEach(_urlFrontier.Queue.GetConsumingEnumerable(), processUri);
+            _statistics = new Statistics(limit);
+            TimerCallback callback = _statistics.ReportStatistics;
+            _statisticallyTimer = new Timer(callback, null, 1000, 1000);
+            Console.WriteLine("Starting Threads");
+            var background = Task.Factory.StartNew(Process);
+
+            switch (limit)
+            {
+                case Statistics.NO_LIMIT:
+                    if (Console.ReadKey().KeyChar == 'c')
+                    {
+                        _cts.Cancel();
+                    }
+                    break;
+                default:
+                    while (_statistics.PagesCrawled < limit) {} // Spin around while we haven't reached our limit
+                    _cts.Cancel();
+                    break;
+            }
+
+            _urlFrontier.CompleteAdding();
+
+            try
+            {
+                background.Wait();
+            }
+            catch (AggregateException e)
+            {
+                foreach (var innerException in e.InnerExceptions)
+                {
+                    if (innerException is TaskCanceledException)
+                    {
+                        _logger.Write(LogLevel.Info, string.Format("TaskCanceledException: Task {0}",
+                            ((TaskCanceledException)innerException).Task.Id));
+                    }
+                    else
+                    {
+                        _logger.Write(LogLevel.Error, innerException.ToString());
+                    }
+                }
+            }
+
+            _statisticallyTimer.Dispose();
+            _store.WriteFileMap();
         }
 
-        void processUri(Uri uri)
+        private void Process()
+        {
+            ParallelOptions options = new ParallelOptions();
+            options.CancellationToken = _cts.Token;
+            Parallel.ForEach(_urlFrontier.GetUris(), options, (uri) => ProcessUri(options, uri));
+        }
+
+        private void ProcessUri(ParallelOptions options, Uri uri)
         {
             if (uri == null)
                 return;
-            WebPage webpage = new WebPage(_urlFrontier.GetUri());
+
+            WebPage webpage = new WebPage(uri);
 
             // Is it safe to visit the webpage?
             if (!EnsurePoliteVisit(webpage)) return;
@@ -75,50 +119,15 @@ namespace WebCrawler.Crawl
             if (!webpage.IsLoaded)
                 return;
 
+            if (options.CancellationToken.IsCancellationRequested)
+            {
+                Thread.CurrentThread.Abort();
+            }
             _store.WriteFile(webpage);
+            _statistics.IncrementPagesCrawled();
 
             // Add extracted anchors to the queue
             _urlFrontier.AddUriRange(webpage.GetAnchors());
-
-            _statistics.IncrementPagesCrawled();
-        }
-
-        public void Start(int limit = 1000)
-        {
-            _logger.Write(LogLevel.Info, "Crawl started");
-            _statistics = new Statistics(limit);
-            TimerCallback callback = _statistics.ReportStatistics;
-            _statisticallyTimer = new Timer(callback, null, 1000, 1000);
-
-            while (!_urlFrontier.IsEmpty() && _statistics.PagesCrawled < limit)
-            {
-                WebPage webpage = new WebPage(_urlFrontier.GetUri());
-
-                // Is it safe to visit the webpage?
-                if (!EnsurePoliteVisit(webpage)) continue;
-
-                // Visit webpage
-                webpage.LoadPage();
-
-                // make sure to update or add time for visit to the dictionary
-                UpdateTimestamp(webpage);
-
-                // Add webpage anchors to the queue
-                if (!webpage.IsLoaded)
-                    continue;
-
-                _store.WriteFile(webpage);
-
-                // Add extracted anchors to the queue
-                _urlFrontier.AddUriRange(webpage.GetAnchors());
-
-                _statistics.IncrementPagesCrawled();
-            }
-
-            _store.WriteFileMap();
-            _statisticallyTimer.Dispose();
-            _logger.Write(LogLevel.Info, "Crawl Finished");
-            _logger.Write(LogLevel.Info, "");
         }
         
         private bool EnsurePoliteVisit(WebPage webpage)
@@ -147,14 +156,9 @@ namespace WebCrawler.Crawl
                 DateTime safeVisit = _visitedServers[address];
 
                 int delay = (int) safeVisit.Subtract(now).TotalMilliseconds;
-
-                Console.SetCursorPosition(0, 4);
                 if (delay > 0)
                 {
-                    Console.WriteLine("Waiting {0} ms before visiting", delay);
                     Thread.Sleep(delay);
-                    Console.SetCursorPosition(0, 4);
-                    Console.WriteLine();
                 }
             }
             return true;
@@ -172,6 +176,9 @@ namespace WebCrawler.Crawl
                 _visitedServers.TryAdd(webpage.Address, nextValidVisitTime);
             }
         }
-        
+
+        public void Dispose()
+        {
+        }
     }
 }

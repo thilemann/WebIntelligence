@@ -11,7 +11,7 @@ namespace WebCrawler.Crawl
     public class Store
     {
         private readonly string _outputPath;
-        private readonly Dictionary<string, string> _fileToDomainMap;
+        private Dictionary<string, string> _fileToDomainMap;
         private Mutex storeMutex;
 
         public Store()
@@ -46,6 +46,7 @@ namespace WebCrawler.Crawl
                     writer.WriteLine(pair.Key + ";" + pair.Value);
                 }
             }
+            _fileToDomainMap = null;
         }
 
         public void LoadFileMap()
@@ -61,8 +62,5 @@ namespace WebCrawler.Crawl
             }
 
         }
-
-
-
     }
 }

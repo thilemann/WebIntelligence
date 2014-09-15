@@ -9,13 +9,15 @@ namespace WebCrawler.Crawl
 {
     interface IUrlFrontier
     {
-        BlockingCollection<Uri> Queue { get; set; }
+        BlockingCollection<Uri> _queue { get; set; }
 
-        Uri GetUri();
+        IEnumerable<Uri> GetUris();
+
+        void CompleteAdding();
 
         void AddUri(Uri uri);
 
-        void AddUriRange(List<Uri> range);
+        bool AddUriRange(List<Uri> range);
 
         bool IsEmpty();
     }

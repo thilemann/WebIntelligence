@@ -9,7 +9,7 @@ namespace WebCrawler.Crawl
 {
     class Statistics
     {
-        private const int NO_LIMIT = -1;
+        public const int NO_LIMIT = -1;
 
         private readonly int _pageLimit;
         private readonly DateTime _startTime;

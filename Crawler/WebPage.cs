@@ -65,15 +65,20 @@ namespace WebCrawler.Crawl
 
             // Gets the stream associated with the response.
             Stream stream = response.GetResponseStream();
-            Encoding encoding = System.Text.Encoding.GetEncoding("utf-8");
+            Encoding encoding = Encoding.GetEncoding("utf-8");
 
             // Pipes the stream to a higher level stream reader with the required encoding format. 
             StreamReader reader = new StreamReader(stream, encoding);
 
-            _html.LoadHtml(reader.ReadToEnd());
-
-            Console.SetCursorPosition(0, 3);
-            Console.WriteLine("Visited: {0}", _uri.AbsoluteUri);
+            try
+            {
+                _html.LoadHtml(reader.ReadToEnd());
+            }
+            catch (OutOfMemoryException e)
+            {
+                _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' was too large to load into memory"));
+                _logger.Write(LogLevel.Error, e.ToString());
+            }
 
             IsLoaded = true;
         }

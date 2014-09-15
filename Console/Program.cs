@@ -13,7 +13,7 @@ namespace WebCrawler
         {
             Crawler crawler = new Crawler("Ressources\\Seeds.txt");
             Console.WriteLine("Starting...");
-            crawler.Start();
+            crawler.Start(1000);
             Console.WriteLine("Finished crawling...");
 
             //Uri uri = new Uri("http://www.kabelchristensen.dk/Sitemap");
@@ -23,6 +23,7 @@ namespace WebCrawler
             //{
             //    Console.WriteLine(url.Location + "\t\t\t" + url.LastModified);
             //}
+            Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
         }
     }
