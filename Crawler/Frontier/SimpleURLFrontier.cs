@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,20 +8,25 @@ using System.Threading.Tasks;
 
 namespace WebCrawler.Crawl
 {
-    class SimpleUrlFrontier : IUrlFrontier
+    public class SimpleUrlFrontier : IUrlFrontier
     {
-        private readonly Queue<Uri> _queue;
-        private readonly Dictionary<string, object> _addedPages;
+        public BlockingCollection<Uri> _queue { get; set; }
+        private readonly ConcurrentDictionary<string, object> _addedPages;
 
         public SimpleUrlFrontier(string seeds)
         {
-            _addedPages = new Dictionary<string, object>();
+            _addedPages = new ConcurrentDictionary<string, object>();
             _queue = Helper.GetSeeds(seeds);
         }
 
-        public Uri GetUri()
+        public virtual IEnumerable<Uri> GetUris()
         {
-            return _queue.Dequeue();
+            return _queue.GetConsumingEnumerable();
+        }
+
+        public virtual void CompleteAdding()
+        {
+            _queue.CompleteAdding();
         }
 
         public void AddUri(Uri uri)
@@ -30,20 +36,24 @@ namespace WebCrawler.Crawl
 
         private void SafeAddUri(Uri uri)
         {
-
             if (!_addedPages.ContainsKey(uri.AbsoluteUri))
             {
-                _queue.Enqueue(uri);
-                _addedPages.Add(uri.AbsoluteUri, null);
+                _queue.Add(uri);
+                _addedPages.TryAdd(uri.AbsoluteUri, null);
             }
         }
 
-        public void AddUriRange(List<Uri> range)
+        public bool AddUriRange(List<Uri> range)
         {
+            if (_queue.IsAddingCompleted)
+                return false;
+
             foreach (var uri in range)
             {
                 SafeAddUri(uri);
             }
+
+            return true;
         }
 
         public bool IsEmpty()
