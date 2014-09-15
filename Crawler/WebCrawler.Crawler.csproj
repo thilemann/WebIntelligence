@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crawler.cs" />
+    <Compile Include="Frontier\ExtendedURLFrontier.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Frontier\IURLFrontier.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

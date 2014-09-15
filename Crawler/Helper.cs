@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,15 +7,16 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using WebCrawler.Logger;
 
 namespace WebCrawler.Crawl
 {
     public class Helper
     {
-        public static Queue<Uri> GetSeeds(string seedsPath)
+        public static BlockingCollection<Uri> GetSeeds(string seedsPath)
         {
             string[] seeds = File.ReadAllLines(seedsPath);
-            Queue<Uri> queue = new Queue<Uri>();
+            BlockingCollection<Uri> queue = new BlockingCollection<Uri>();
 
             foreach (var seed in seeds)
             {
@@ -25,7 +27,7 @@ namespace WebCrawler.Crawl
 
                 try
                 {
-                    queue.Enqueue(new Uri(seed));
+                    queue.Add(new Uri(seed));
                 }
                 catch (UriFormatException e)
                 {
