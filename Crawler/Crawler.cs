@@ -101,13 +101,9 @@ namespace WebCrawler.Crawl
 
                 int delay = (int) safeVisit.Subtract(now).TotalMilliseconds;
 
-                Console.SetCursorPosition(0, 4);
                 if (delay > 0)
                 {
-                    Console.WriteLine("Waiting {0} ms before visiting", delay);
                     Thread.Sleep(delay);
-                    Console.SetCursorPosition(0, 4);
-                    Console.WriteLine();
                 }
             }
             return true;
