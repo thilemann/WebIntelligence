@@ -11,7 +11,7 @@ namespace WebCrawler.Logger
 {
     public class Log
     {
-        private const string LOGFILE_PATH = "crawler.log";
+        private const string LOGFILE = "crawler.log";
         private const string TIMESTAMP_PATTERN = "dd-MM-yyyy HH:mm:ss";
 
         private static Log _instance;
@@ -27,7 +27,9 @@ namespace WebCrawler.Logger
 
         private Log()
         {
-            Stream stream = new FileStream(LOGFILE_PATH, FileMode.OpenOrCreate);
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss")));
+            string output = Path.Combine(directoryInfo.ToString(), LOGFILE);
+            Stream stream = new FileStream(output, FileMode.OpenOrCreate);
             Debug.Listeners.Add(new TextWriterTraceListener(stream));
         }
 
