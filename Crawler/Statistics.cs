@@ -25,6 +25,16 @@ namespace WebCrawler.Crawl
             Interlocked.Increment(ref _pagesCrawled);
         }
 
+        public TimeSpan TimeElapsed
+        {
+            get { return DateTime.Now.Subtract(_startTime); }
+        }
+
+        public double PagesPrSecond
+        {
+            get { return _pagesCrawled / TimeElapsed.TotalSeconds; }
+        }
+        
         public Statistics()
         {
             _pagesCrawled = 0;
@@ -46,7 +56,10 @@ namespace WebCrawler.Crawl
                 Console.WriteLine("Pages crawled: {0} / {1}", _pagesCrawled, _pageLimit);
 
             Console.SetCursorPosition(0, 2);
-            Console.WriteLine("Time elapsed: {0}", DateTime.Now.Subtract(_startTime).ToString(@"hh\:mm\:ss"));
+            Console.WriteLine("Time elapsed: {0}", TimeElapsed.ToString(@"hh\:mm\:ss"));
+
+            Console.SetCursorPosition(0, 3);
+            Console.WriteLine("Crawled pages pr second: {0}", PagesPrSecond);
         }
     }
 }
