@@ -48,39 +48,43 @@ namespace WebCrawler.Crawl
         public void LoadPage()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_uri);
+            request.Timeout = 5000;
 
             // Sends the HttpWebRequest and waits for the response.
             HttpWebResponse response;
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
+
+                // Gets the stream associated with the response.
+                Stream stream = response.GetResponseStream();
+                Encoding encoding = Encoding.GetEncoding("utf-8");
+
+                // Pipes the stream to a higher level stream reader with the required encoding format. 
+                StreamReader reader = new StreamReader(stream, encoding);
+
+                try
+                {
+                    _html.LoadHtml(reader.ReadToEnd());
+                    IsLoaded = true;
+                }
+                catch (OutOfMemoryException e)
+                {
+                    _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' was too large to load into memory", _uri.AbsoluteUri));
+                    _logger.Write(LogLevel.Error, e.ToString());
+                }
+                catch (IOException e)
+                {
+                    _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' input could not be read", _uri.AbsoluteUri));
+                    _logger.Write(LogLevel.Error, e.ToString());
+                }
             }
             catch (WebException e)
             {
                 _logger.Write(LogLevel.Error, "WebPage: Could not load page");
                 _logger.Write(LogLevel.Error, _uri.AbsoluteUri);
                 _logger.Write(LogLevel.Error, e.ToString());
-                return;
             }
-
-            // Gets the stream associated with the response.
-            Stream stream = response.GetResponseStream();
-            Encoding encoding = Encoding.GetEncoding("utf-8");
-
-            // Pipes the stream to a higher level stream reader with the required encoding format. 
-            StreamReader reader = new StreamReader(stream, encoding);
-
-            try
-            {
-                _html.LoadHtml(reader.ReadToEnd());
-            }
-            catch (OutOfMemoryException e)
-            {
-                _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' was too large to load into memory"));
-                _logger.Write(LogLevel.Error, e.ToString());
-            }
-
-            IsLoaded = true;
         }
 
         public void SavePage(string filePath)
