@@ -94,9 +94,27 @@ namespace WebCrawler.Crawl
 
         private void Process()
         {
+            var exceptions = new ConcurrentQueue<Exception>();
+
             ParallelOptions options = new ParallelOptions();
             options.CancellationToken = _cts.Token;
-            Parallel.ForEach(_urlFrontier.GetUris(), options, (uri) => ProcessUri(options, uri));
+            Parallel.ForEach(_urlFrontier.GetUris(), options, (uri) => 
+            {
+                try
+                {
+                    ProcessUri(options, uri);
+                }
+                catch (Exception e) { exceptions.Enqueue(e); }
+            });
+
+            // Throw the exceptions here after the loop completes. 
+            if (exceptions.Count > 0)
+            {
+                foreach (var e in exceptions)
+                {
+                    _logger.Write(LogLevel.Error, e.InnerException.ToString());
+                }
+            }
         }
 
         private void ProcessUri(ParallelOptions options, Uri uri)
