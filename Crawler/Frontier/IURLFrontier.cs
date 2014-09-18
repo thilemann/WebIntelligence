@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     interface IUrlFrontier
     {
