@@ -11,7 +11,7 @@ using System.Threading;
 using WebCrawler.Logger;
 using WebCrawler.RobotsTxtParser;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class Crawler : IDisposable
     {
@@ -24,18 +24,20 @@ namespace WebCrawler.Crawl
         private readonly Log _logger;
         private readonly Store _store;
         private readonly IUrlFrontier _urlFrontier;
-        private readonly ConcurrentDictionary<IPAddress, DateTime> _visitedServers;
+        private readonly ConcurrentDictionary<int, long> _visitedServers;
+        private readonly ConcurrentDictionary<int, int> _domainToIpMap;
         private readonly Parser _parser;
-        private readonly ConcurrentDictionary<string, RobotsTxt> _robotsTxts;
+        private readonly ConcurrentDictionary<int, RobotsTxt> _robotsTxts;
 
         public Crawler(string seeds)
         {
             _logger = Log.Instance;
-            _visitedServers = new ConcurrentDictionary<IPAddress, DateTime>();
+            _visitedServers = new ConcurrentDictionary<int, long>();
+            _domainToIpMap = new ConcurrentDictionary<int, int>();
             _urlFrontier = new SimpleUrlFrontier(seeds);
             _store = new Store();
             _parser = new Parser();
-            _robotsTxts = new ConcurrentDictionary<string, RobotsTxt>();
+            _robotsTxts = new ConcurrentDictionary<int, RobotsTxt>();
             _cts = new CancellationTokenSource();
         }
 
@@ -153,25 +155,31 @@ namespace WebCrawler.Crawl
             // Check robotstxt to see if we can visit the page
             string hostname = webpage.Uri.DnsSafeHost;
             RobotsTxt robotsTxt;
-            if (!_robotsTxts.ContainsKey(hostname))
+            if (!_robotsTxts.ContainsKey(hostname.GetHashCode()))
             {
                 robotsTxt = _parser.Parse(hostname);
-                _robotsTxts.TryAdd(hostname, robotsTxt);
+                if (robotsTxt == null) // we could not get the robotstxt therefore we cannot visit and we requeue the Uri
+                {
+                    _urlFrontier.AddUri(webpage.Uri);
+                    return false;
+                }
+
+                _robotsTxts.TryAdd(hostname.GetHashCode(), robotsTxt);
             }
             else
             {
-                robotsTxt = _robotsTxts[hostname];
+                robotsTxt = _robotsTxts[hostname.GetHashCode()];
             }
 
             if (!robotsTxt.CanVisit("*", webpage.Uri)) // We are not allowed to visit this page
                 return false;
 
             // We are allowed to visit, ensure we are waiting enough time before next request
-            IPAddress address = webpage.Address;
+            int address = webpage.Address;
             if (_visitedServers.ContainsKey(address))
             {
                 DateTime now = DateTime.Now;
-                DateTime safeVisit = _visitedServers[address];
+                DateTime safeVisit = new DateTime(_visitedServers[address]);
 
                 int delay = (int) safeVisit.Subtract(now).TotalMilliseconds;
                 if (delay > 0)
@@ -187,11 +195,11 @@ namespace WebCrawler.Crawl
             DateTime nextValidVisitTime = DateTime.Now.AddSeconds(TIME_BETWEEN_VISITS);
             if (_visitedServers.ContainsKey(webpage.Address))
             {
-                _visitedServers[webpage.Address] = nextValidVisitTime;
+                _visitedServers[webpage.Address] = nextValidVisitTime.Ticks;
             }
             else
             {
-                _visitedServers.TryAdd(webpage.Address, nextValidVisitTime);
+                _visitedServers.TryAdd(webpage.Address, nextValidVisitTime.Ticks);
             }
         }
 
