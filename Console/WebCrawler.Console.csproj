@@ -49,9 +49,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Crawler\WebCrawler.Crawler.csproj">
+    <ProjectReference Include="..\Crawler\WebCrawler.Core.csproj">
       <Project>{6e1867d9-c88b-47c8-bfa5-c857301b8699}</Project>
-      <Name>WebCrawler.Crawler</Name>
+      <Name>WebCrawler.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tokenizer\Indexer.Tokenizer.csproj">
+      <Project>{373b5224-3a12-468a-a183-1b02dfef9b6b}</Project>
+      <Name>Indexer.Tokenizer</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
