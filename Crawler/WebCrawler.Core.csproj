@@ -7,8 +7,8 @@
     <ProjectGuid>{6E1867D9-C88B-47C8-BFA5-C857301B8699}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WebCrawler.Crawler</RootNamespace>
-    <AssemblyName>WebCrawler.Crawler</AssemblyName>
+    <RootNamespace>WebCrawler.Core</RootNamespace>
+    <AssemblyName>WebCrawler.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
