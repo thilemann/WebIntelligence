@@ -72,9 +72,11 @@ namespace WebCrawler.RobotsTxtParser
                     if (currentPoliteness != null)
                         robotTxt.Sitemaps.Add(sitemapMatch.Groups[1].Value);
                 }
+
+                return robotTxt;
             }
 
-            return robotTxt;
+            return null;
         }
 
         private StreamReader GetStream(Uri uri)
@@ -83,6 +85,7 @@ namespace WebCrawler.RobotsTxtParser
             try
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+                request.Timeout = 5000;
 
                 // Sends the HttpWebRequest and waits for the response.
                 HttpWebResponse response = (HttpWebResponse)request.GetResponse();
