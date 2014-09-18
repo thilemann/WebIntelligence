@@ -6,16 +6,16 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class SimpleUrlFrontier : IUrlFrontier
     {
         public BlockingCollection<Uri> _queue { get; set; }
-        private readonly ConcurrentDictionary<string, object> _addedPages;
+        private readonly ConcurrentDictionary<int, object> _addedPages;
 
         public SimpleUrlFrontier(string seeds)
         {
-            _addedPages = new ConcurrentDictionary<string, object>();
+            _addedPages = new ConcurrentDictionary<int, object>();
             _queue = Helper.GetSeeds(seeds);
         }
 
@@ -36,10 +36,10 @@ namespace WebCrawler.Crawl
 
         private void SafeAddUri(Uri uri)
         {
-            if (!_addedPages.ContainsKey(uri.AbsoluteUri))
+            if (!_addedPages.ContainsKey(uri.AbsoluteUri.GetHashCode()))
             {
                 _queue.Add(uri);
-                _addedPages.TryAdd(uri.AbsoluteUri, null);
+                _addedPages.TryAdd(uri.AbsoluteUri.GetHashCode(), null);
             }
         }
 
