@@ -8,15 +8,22 @@ using System.Net;
 using System.IO;
 using WebCrawler.Logger;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class WebPage
     {
         private readonly HtmlDocument _html;
         private readonly Log _logger;
         private Uri _uri;
+        private int _addressHash;
 
-        public IPAddress Address { get; private set; }
+        public int Address
+        {
+            get
+            {
+                return _addressHash;
+            }
+        }
 
         public Uri Uri
         {
@@ -33,11 +40,11 @@ namespace WebCrawler.Crawl
             _html = new HtmlDocument();
             try
             {
-                Address = Helper.ResolveDNS(uri.DnsSafeHost);
+                _addressHash = Helper.ResolveDNS(uri.DnsSafeHost).Address.GetHashCode();
             }
             catch (Exception e)
             {
-                Address = new IPAddress(new byte[] { 0, 0, 0, 0 });
+                _addressHash = new IPAddress(new byte[] { 0, 0, 0, 0 }).Address.GetHashCode();
                 _logger.Write(LogLevel.Error, "WebPage: DNS Resolving failed");
                 _logger.Write(LogLevel.Error, uri.DnsSafeHost);
                 _logger.Write(LogLevel.Error, e.ToString());
