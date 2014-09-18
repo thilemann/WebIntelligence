@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class Store
     {

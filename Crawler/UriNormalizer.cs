@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     static class UriNormalizer
     {

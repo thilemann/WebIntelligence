@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WebCrawler.Logger;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class Helper
     {
