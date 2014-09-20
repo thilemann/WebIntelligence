@@ -27,7 +27,7 @@ namespace WebCrawler.Logger
 
         private Log()
         {
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss")));
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy")));
             string output = Path.Combine(directoryInfo.ToString(), LOGFILE);
             Stream stream = new FileStream(output, FileMode.OpenOrCreate);
             Debug.Listeners.Add(new TextWriterTraceListener(stream));
