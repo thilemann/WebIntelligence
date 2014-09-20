@@ -1,15 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.RobotsTxtParser", "RobotsParser\WebCrawler.RobotsTxtParser.csproj", "{9783FA54-7F69-48C3-BA7A-D29E39975BDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Crawler", "Crawler\WebCrawler.Crawler.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Core", "Crawler\WebCrawler.Core.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CrawledPages", "CrawledPages\CrawledPages.sqlproj", "{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Console", "Console\WebCrawler.Console.csproj", "{D3DE7617-6F54-4153-A34F-D5992ADAE840}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Logger", "Log\WebCrawler.Logger.csproj", "{2E0D013B-659F-4712-BE97-6609B5B52F1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer.Tokenizer", "Tokenizer\Indexer.Tokenizer.csproj", "{373B5224-3A12-468A-A183-1B02DFEF9B6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer.Linguistics", "Indexer.Linguistics\Indexer.Linguistics.csproj", "{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer.Core", "Indexer.Core\Indexer.Core.csproj", "{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +47,18 @@ Global
 		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E0D013B-659F-4712-BE97-6609B5B52F1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{373B5224-3A12-468A-A183-1B02DFEF9B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{373B5224-3A12-468A-A183-1B02DFEF9B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{373B5224-3A12-468A-A183-1B02DFEF9B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{373B5224-3A12-468A-A183-1B02DFEF9B6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

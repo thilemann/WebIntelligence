@@ -1,40 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class Store
     {
         private readonly string _outputPath;
-        private Dictionary<string, string> _fileToDomainMap;
-        private Mutex storeMutex;
+        private ConcurrentDictionary<string, string> _fileToDomainMap;
 
         public Store()
         {
-            storeMutex = new Mutex();
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), "pages"));
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss")));
             _outputPath = directoryInfo.ToString();
-            _fileToDomainMap = new Dictionary<string, string>();
+            _fileToDomainMap = new ConcurrentDictionary<string,string>();
         }
 
         public void WriteFile(WebPage page)
         {
-            storeMutex.WaitOne();
             if (_fileToDomainMap.ContainsKey(page.Uri.AbsoluteUri))
+            {
                 return;
+            }
 
             Guid guid = Guid.NewGuid();
             string fileName = guid.ToString() + ".html";
 
             page.SavePage(Path.Combine(_outputPath, fileName));
 
-            _fileToDomainMap.Add(page.Uri.AbsoluteUri, fileName);
-            storeMutex.ReleaseMutex();
+            _fileToDomainMap.TryAdd(page.Uri.AbsoluteUri, fileName);
         }
 
         public void WriteFileMap()
@@ -57,7 +56,7 @@ namespace WebCrawler.Crawl
                 {
                     string[] array = reader.ReadLine().Split(';');
 
-                    _fileToDomainMap.Add(array[0], array[1]);
+                    _fileToDomainMap.TryAdd(array[0], array[1]);
                 }
             }
 

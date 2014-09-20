@@ -8,15 +8,22 @@ using System.Net;
 using System.IO;
 using WebCrawler.Logger;
 
-namespace WebCrawler.Crawl
+namespace WebCrawler.Core
 {
     public class WebPage
     {
         private readonly HtmlDocument _html;
         private readonly Log _logger;
         private Uri _uri;
+        private int _addressHash;
 
-        public IPAddress Address { get; private set; }
+        public int Address
+        {
+            get
+            {
+                return _addressHash;
+            }
+        }
 
         public Uri Uri
         {
@@ -33,11 +40,11 @@ namespace WebCrawler.Crawl
             _html = new HtmlDocument();
             try
             {
-                Address = Helper.ResolveDNS(uri.DnsSafeHost);
+                _addressHash = Helper.ResolveDNS(uri.DnsSafeHost).Address.GetHashCode();
             }
             catch (Exception e)
             {
-                Address = new IPAddress(new byte[] { 0, 0, 0, 0 });
+                _addressHash = new IPAddress(new byte[] { 0, 0, 0, 0 }).Address.GetHashCode();
                 _logger.Write(LogLevel.Error, "WebPage: DNS Resolving failed");
                 _logger.Write(LogLevel.Error, uri.DnsSafeHost);
                 _logger.Write(LogLevel.Error, e.ToString());
@@ -48,39 +55,43 @@ namespace WebCrawler.Crawl
         public void LoadPage()
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(_uri);
+            request.Timeout = 5000;
 
             // Sends the HttpWebRequest and waits for the response.
             HttpWebResponse response;
             try
             {
                 response = (HttpWebResponse)request.GetResponse();
+
+                // Gets the stream associated with the response.
+                Stream stream = response.GetResponseStream();
+                Encoding encoding = Encoding.GetEncoding("utf-8");
+
+                // Pipes the stream to a higher level stream reader with the required encoding format. 
+                StreamReader reader = new StreamReader(stream, encoding);
+
+                try
+                {
+                    _html.LoadHtml(reader.ReadToEnd());
+                    IsLoaded = true;
+                }
+                catch (OutOfMemoryException e)
+                {
+                    _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' was too large to load into memory", _uri.AbsoluteUri));
+                    _logger.Write(LogLevel.Error, e.ToString());
+                }
+                catch (IOException e)
+                {
+                    _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' input could not be read", _uri.AbsoluteUri));
+                    _logger.Write(LogLevel.Error, e.ToString());
+                }
             }
             catch (WebException e)
             {
                 _logger.Write(LogLevel.Error, "WebPage: Could not load page");
                 _logger.Write(LogLevel.Error, _uri.AbsoluteUri);
                 _logger.Write(LogLevel.Error, e.ToString());
-                return;
             }
-
-            // Gets the stream associated with the response.
-            Stream stream = response.GetResponseStream();
-            Encoding encoding = Encoding.GetEncoding("utf-8");
-
-            // Pipes the stream to a higher level stream reader with the required encoding format. 
-            StreamReader reader = new StreamReader(stream, encoding);
-
-            try
-            {
-                _html.LoadHtml(reader.ReadToEnd());
-            }
-            catch (OutOfMemoryException e)
-            {
-                _logger.Write(LogLevel.Error, string.Format("WebPage.cs: Uri '{0}' was too large to load into memory"));
-                _logger.Write(LogLevel.Error, e.ToString());
-            }
-
-            IsLoaded = true;
         }
 
         public void SavePage(string filePath)
