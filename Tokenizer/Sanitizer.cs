@@ -4,7 +4,7 @@ using System.Xml;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
-namespace Indexer.Token
+namespace Indexing.Token
 {
     public class Sanitizer
     {

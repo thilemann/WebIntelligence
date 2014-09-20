@@ -4,41 +4,54 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Indexer.Token;
-using Indexer.Linguistics;
+using Indexing.Linguistics;
+using Indexing.Token;
 
-namespace Indexer.Core
+namespace Indexing.Core
 {
-    class Indexer
+    public class Indexer
     {
-        private Tokenizer tokenizer;
+        private readonly Tokenizer _tokenizer;
 
-        private Dictionary<int, string> postingMap;
-        private SortedDictionary<string, Term> terms;
+        private readonly Dictionary<int, string> _postingMap;
+        private readonly SortedDictionary<string, Term> _terms;
 
         public Indexer()
         {
-            tokenizer = new Tokenizer();
-            postingMap = new Dictionary<int, string>();
-            terms = new SortedDictionary<string, Term>();
+            _tokenizer = new Tokenizer();
+            _postingMap = new Dictionary<int, string>();
+            _terms = new SortedDictionary<string, Term>();
         }
 
-        public void Start(string uri, string fileContent)
+        public void Index(string uri, string fileContent)
         {
             int postingId = uri.GetHashCode();
-            postingMap.Add(postingId, uri);
-            List<string> unStemmedTokens = tokenizer.Tokenize(fileContent);
+            _postingMap.Add(postingId, uri);
+            IEnumerable<string> unStemmedTokens = _tokenizer.Tokenize(fileContent);
             foreach (var token in unStemmedTokens)
             {
-                Stemmer stemmer  = new Stemmer();
+                Stemmer stemmer = new Stemmer();
                 stemmer.Stem(token);
                 string stemmedToken = stemmer.ToString();
-                
-                Term term = new Term();
-                term.AddPosting(postingId);
-                terms.Add(stemmedToken, term);
+
+
+                Term term;
+                if (_terms.ContainsKey(stemmedToken))
+                {
+                    if (_terms[stemmedToken].ContainsPosting(postingId))
+                    {
+                        continue;
+                    }
+                    term = _terms[stemmedToken];
+                    term.AddPosting(postingId);
+                }
+                else
+                {
+                    term = new Term(stemmedToken);
+                    term.AddPosting(postingId);
+                    _terms.Add(stemmedToken, term);
+                }
             }
-            unStemmedTokens = null;
         }
     }
 }

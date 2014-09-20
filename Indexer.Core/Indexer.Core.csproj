@@ -7,8 +7,8 @@
     <ProjectGuid>{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Indexer.Core</RootNamespace>
-    <AssemblyName>Indexer.Core</AssemblyName>
+    <RootNamespace>Indexing.Core</RootNamespace>
+    <AssemblyName>Indexing.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

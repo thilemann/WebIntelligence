@@ -7,8 +7,8 @@
     <ProjectGuid>{373B5224-3A12-468A-A183-1B02DFEF9B6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Indexer.Token</RootNamespace>
-    <AssemblyName>Indexer.Token</AssemblyName>
+    <RootNamespace>Indexing.Token</RootNamespace>
+    <AssemblyName>Indexing.Token</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

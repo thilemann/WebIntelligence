@@ -4,27 +4,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Indexer.Core
+namespace Indexing.Core
 {
     class Term
     {
-        SortedList Postings;
+        private readonly SortedList _postings;
 
         public int Frequency {
             get
             {
-                return Postings.Count;
+                return _postings.Count;
             }
         }
 
-        public Term()
+        public Term(string term)
         {
-            Postings = new SortedList();
+            _postings = new SortedList();
+        }
+
+        public bool ContainsPosting(int id)
+        {
+            return _postings.ContainsKey(id);
         }
 
         public void AddPosting(int id)
         {
-            Postings.Add(id, id);
+            _postings.Add(id, id);
         }
     }
 }

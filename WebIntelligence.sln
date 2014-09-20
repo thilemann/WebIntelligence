@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.RobotsTxtParser", "RobotsParser\WebCrawler.RobotsTxtParser.csproj", "{9783FA54-7F69-48C3-BA7A-D29E39975BDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Core", "Crawler\WebCrawler.Core.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
-EndProject
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "CrawledPages", "CrawledPages\CrawledPages.sqlproj", "{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Console", "Console\WebCrawler.Console.csproj", "{D3DE7617-6F54-4153-A34F-D5992ADAE840}"
 EndProject
@@ -33,12 +29,6 @@ Global
 		{6E1867D9-C88B-47C8-BFA5-C857301B8699}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E1867D9-C88B-47C8-BFA5-C857301B8699}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E1867D9-C88B-47C8-BFA5-C857301B8699}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DF4084F3-E295-42B9-AC9E-E1F1D2102E9F}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3DE7617-6F54-4153-A34F-D5992ADAE840}.Release|Any CPU.ActiveCfg = Release|Any CPU

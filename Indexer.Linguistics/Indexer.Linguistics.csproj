@@ -7,8 +7,8 @@
     <ProjectGuid>{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Indexer.Linguistics</RootNamespace>
-    <AssemblyName>Indexer.Linguistics</AssemblyName>
+    <RootNamespace>Indexing.Linguistics</RootNamespace>
+    <AssemblyName>Indexing.Linguistics</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
