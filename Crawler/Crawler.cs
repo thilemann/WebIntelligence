@@ -100,19 +100,32 @@ namespace WebCrawler.Core
 
             ParallelOptions options = new ParallelOptions();
             options.CancellationToken = _cts.Token;
-            Parallel.ForEach(_urlFrontier.GetUris(), options, (uri) => 
+            try
             {
-                try
+                Parallel.ForEach(_urlFrontier.GetUris(), options, (uri) =>
                 {
-                    ProcessUri(options, uri);
-                }
-                catch (Exception e) { exceptions.Enqueue(e); }
-            });
-
-            // Throw the exceptions here after the loop completes. 
-            if (exceptions.Count > 0)
+                    try
+                    {
+                        ProcessUri(options, uri);
+                    }
+                    catch (Exception e) { exceptions.Enqueue(e); }
+                });
+            }
+            catch (AggregateException e)
             {
-                foreach (var e in exceptions)
+                LogExceptions(e.InnerExceptions);
+            }
+
+            LogExceptions(exceptions);
+        }
+
+        private void LogExceptions(IEnumerable<Exception> exceptions)
+        {
+            // Throw the exceptions here after the loop completes. 
+            var enumerable = exceptions as IList<Exception> ?? exceptions.ToList();
+            if (enumerable.Any())
+            {
+                foreach (var e in enumerable)
                 {
                     _logger.Write(LogLevel.Error, e.InnerException.ToString());
                 }
