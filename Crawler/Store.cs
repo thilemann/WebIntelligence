@@ -14,9 +14,14 @@ namespace WebCrawler.Core
         private readonly string _outputPath;
         private ConcurrentDictionary<string, string> _fileToDomainMap;
 
+        public string OutputPath
+        {
+            get { return _outputPath; }
+        }
+
         public Store()
         {
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy HH.mm.ss")));
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy")));
             _outputPath = directoryInfo.ToString();
             _fileToDomainMap = new ConcurrentDictionary<string,string>();
         }
@@ -42,24 +47,24 @@ namespace WebCrawler.Core
             {
                 foreach (var pair in _fileToDomainMap)
                 {
-                    writer.WriteLine(pair.Key + ";" + pair.Value);
+                    writer.WriteLine(pair.Key + "¤" + pair.Value);
                 }
             }
             _fileToDomainMap = null;
         }
 
-        public void LoadFileMap()
+        public Dictionary<string, string> LoadFileMap()
         {
             using (StreamReader reader = new StreamReader(File.Open(Path.Combine(_outputPath, "_filemap.csv"), FileMode.OpenOrCreate)))
             {
                 while (!reader.EndOfStream)
                 {
-                    string[] array = reader.ReadLine().Split(';');
+                    string[] array = reader.ReadLine().Split('¤');
 
                     _fileToDomainMap.TryAdd(array[0], array[1]);
                 }
             }
-
+            return new Dictionary<string, string>(_fileToDomainMap);
         }
     }
 }
