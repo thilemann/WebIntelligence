@@ -57,6 +57,18 @@
       <Project>{28c82ed0-80a6-4dd8-8f1f-08b07b1a342c}</Project>
       <Name>Indexer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Indexer.Linguistics\Indexer.Linguistics.csproj">
+      <Project>{4205b9e6-0ebb-4f1b-a5eb-8ba554e0d970}</Project>
+      <Name>Indexer.Linguistics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Ranker.Core\Ranking.Core.csproj">
+      <Project>{5294a956-745a-452d-9f51-875901908b93}</Project>
+      <Name>Ranking.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tokenizer\Indexer.Tokenizer.csproj">
+      <Project>{373b5224-3a12-468a-a183-1b02dfef9b6b}</Project>
+      <Name>Indexer.Tokenizer</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Ressources\Seeds.txt">
