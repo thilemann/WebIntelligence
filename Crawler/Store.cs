@@ -21,8 +21,7 @@ namespace WebCrawler.Core
 
         public Store()
         {
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy")));
-            _outputPath = directoryInfo.ToString();
+            _outputPath = Logger.Log.outputFolder;
             _fileToDomainMap = new ConcurrentDictionary<string,string>();
         }
 
