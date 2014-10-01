@@ -13,6 +13,7 @@ namespace WebCrawler.Logger
     {
         private const string LOGFILE = "crawler.log";
         private const string TIMESTAMP_PATTERN = "dd-MM-yyyy HH:mm:ss";
+        public static string outputFolder;
 
         private static Log _instance;
         public static Log Instance { 
@@ -27,7 +28,10 @@ namespace WebCrawler.Logger
 
         private Log()
         {
-            DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy")));
+            outputFolder = Path.Combine(Directory.GetCurrentDirectory(), DateTime.Now.ToString("dd-MM-yyyy"));
+            if (Directory.Exists(outputFolder))
+                Directory.Delete(outputFolder, true);
+            DirectoryInfo directoryInfo = Directory.CreateDirectory(outputFolder);
             string output = Path.Combine(directoryInfo.ToString(), LOGFILE);
             Stream stream = new FileStream(output, FileMode.OpenOrCreate);
             Debug.Listeners.Add(new TextWriterTraceListener(stream));
