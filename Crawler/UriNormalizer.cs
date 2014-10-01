@@ -31,6 +31,8 @@ namespace WebCrawler.Core
                 return uri;
             }
 
+            url = RemovePartOfUrl(url);
+
             // Test if url is relative, if so we combine it with the domain
             if (Uri.TryCreate(url, UriKind.Relative, out uri))
             {
@@ -42,6 +44,22 @@ namespace WebCrawler.Core
             }
 
             return uri;
+        }
+
+        private static string RemovePartOfUrl(string url)
+        {
+            if (url.Contains("?"))
+            {
+                int index = url.IndexOf('?');
+                url = url.Remove(index);
+            }
+
+            if (url.Contains("#"))
+            {
+                int index = url.IndexOf('#');
+                url = url.Remove(index);
+            }
+            return url;
         }
     }
 }
