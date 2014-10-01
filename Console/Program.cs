@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -7,6 +8,9 @@ using System.IO;
 using System.Threading.Tasks;
 using WebCrawler.Core;
 using Indexing.Core;
+using Indexing.Token;
+using Indexing.Linguistics;
+using Ranking.Core;
 
 
 namespace WebCrawler
@@ -18,7 +22,7 @@ namespace WebCrawler
             Crawler crawler = new Crawler("Ressources\\Seeds.txt");
 
             Console.WriteLine("Starting...");
-            crawler.Start(500);
+            crawler.Start(50);
             Console.WriteLine("Finished crawling...");
             Console.WriteLine("Press any key to start indexing...");
             Console.ReadLine();
@@ -33,14 +37,41 @@ namespace WebCrawler
             {
                 string fileContent = File.ReadAllText(Path.Combine(fileStore.OutputPath, file.Value));
                 indexer.Index(file.Key, fileContent);
-                Console.SetCursorPosition(0,8);
+                Console.SetCursorPosition(0, 8);
                 Console.WriteLine("Pages indexed {0} / {1}", ++filesIndexed, filesMap.Count);
             }
             DateTime end = DateTime.Now;
             TimeSpan timeElapsed = end.Subtract(start);
-            double pagesPerSec = filesMap.Count/timeElapsed.TotalSeconds;
+            double pagesPerSec = filesMap.Count / timeElapsed.TotalSeconds;
             Console.WriteLine("Indexed {0} pages per second", pagesPerSec);
             Console.WriteLine("Indexing finished in {0}", timeElapsed.ToString(@"hh\:mm\:ss"));
+
+            Ranker ranker = new Ranker();
+            string searchQuery = "Abu Qatada Acquitted on Terrorism Charge";
+
+            Tokenizer tokenizer = new Tokenizer();
+            List<string> queryTerms = tokenizer.TokenizeQuery(searchQuery).ToList();
+            for (int i = 0; i < queryTerms.Count(); i++)
+            {
+                Stemmer stemmer = new Stemmer();
+                stemmer.Stem(queryTerms[i]);
+                queryTerms[i] = stemmer.ToString();
+            }
+
+
+            IEnumerable<KeyValuePair<int, double>> scores = ranker.Rank(queryTerms, indexer.Terms, indexer.TotalDocuments);
+
+            int resultCount = 1;
+            foreach (var item in scores)
+            {
+                string url = indexer.GetUrlFromHash(item.Key);
+                if (url == null)
+                    continue;
+                Console.WriteLine("{0}: {1}", resultCount++, url);
+                if (resultCount > 10)
+                    break;
+            }
+
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
         }
