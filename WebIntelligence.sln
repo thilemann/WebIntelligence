@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.RobotsTxtParser", "RobotsParser\WebCrawler.RobotsTxtParser.csproj", "{9783FA54-7F69-48C3-BA7A-D29E39975BDB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebCrawler.Core", "Crawler\WebCrawler.Core.csproj", "{6E1867D9-C88B-47C8-BFA5-C857301B8699}"
@@ -14,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer.Linguistics", "Indexer.Linguistics\Indexer.Linguistics.csproj", "{4205B9E6-0EBB-4F1B-A5EB-8BA554E0D970}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Indexer.Core", "Indexer.Core\Indexer.Core.csproj", "{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ranking.Core", "Ranker.Core\Ranking.Core.csproj", "{5294A956-745A-452D-9F51-875901908B93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +53,10 @@ Global
 		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28C82ED0-80A6-4DD8-8F1F-08B07B1A342C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5294A956-745A-452D-9F51-875901908B93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5294A956-745A-452D-9F51-875901908B93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5294A956-745A-452D-9F51-875901908B93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5294A956-745A-452D-9F51-875901908B93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
