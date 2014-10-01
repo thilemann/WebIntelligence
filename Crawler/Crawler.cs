@@ -127,7 +127,10 @@ namespace WebCrawler.Core
             {
                 foreach (var e in enumerable)
                 {
-                    _logger.Write(LogLevel.Error, e.InnerException.ToString());
+                    if (e.InnerException == null)
+                        _logger.Write(LogLevel.Error, e.ToString());
+                    else
+                        _logger.Write(LogLevel.Error, e.InnerException.ToString());
                 }
             }
         }
