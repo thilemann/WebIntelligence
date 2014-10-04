@@ -47,7 +47,6 @@ namespace Indexing.Token
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(html);
 
-
             string sanitizedText = sanitizer.SanitizeHtml(html);
             sanitizedText = sanitizer.SanitizeText(sanitizedText);
 
