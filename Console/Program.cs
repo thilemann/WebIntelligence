@@ -74,6 +74,14 @@ namespace WebCrawler
                     break;
             }
 
+            PageRank pageRank = new PageRank();
+            float[] vector = pageRank.DoRank();
+            for (int i = 0; i < vector.Length; i++)
+            {
+                Console.Write(vector[i]);
+            }
+            Console.WriteLine();
+
             Console.WriteLine("Press any key to exit...");
             Console.ReadLine();
         }

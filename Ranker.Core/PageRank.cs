@@ -8,16 +8,25 @@ namespace Ranking.Core
 {
     public class PageRank
     {
-        private float[][] matrix = new float[10][];
+        private const int N = 10;
+        private float[][] matrix;
 
         public PageRank()
         {
-            // Initialize array
-            for (int i = 0; i < matrix.Length; i++)
-            {
-                matrix[i] = new float[10];
-            }
+            float alpha = 0.1f;
 
+            // Initialize array
+            float[][] teleport = createMatrix();
+            for (int i = 0; i < N; i++)
+            {
+                for (int j = 0; j < N; j++)
+                {
+                    teleport[i][j] = 0.1f;
+                }
+            }
+            teleport = multiplyMatrix(teleport, alpha);
+
+            matrix = createMatrix();
             matrix[0][5] += 1.1f;
             matrix[2][5] += 0.6f;
             matrix[2][6] += 0.6f;
@@ -29,6 +38,41 @@ namespace Ranking.Core
             matrix[6][5] += 0.6f;
             matrix[8][9] += 1.1f;
             matrix[9][7] += 1.1f;
+            matrix = multiplyMatrix(matrix, (1 - alpha));
+            matrix = addMatrix(matrix, teleport);
+        }
+        private float[][] createMatrix()
+        {
+            float[][] result = new float[N][];
+            for (int i = 0; i < N; i++)
+            {
+                result[i] = new float[N];
+            }
+            return result;
+        }
+
+        private float[][] addMatrix(float[][] m1, float[][] m2)
+        {
+            for (int i = 0; i < m1.Length; i++)
+            {
+                for (int j = 0; j < m1.Length; j++)
+                {
+                    m1[i][j] += m2[i][j];
+                }
+            }
+            return m1;
+        }
+
+        private float[][] multiplyMatrix(float[][] m, float value)
+        {
+            for (int i = 0; i < m.Length; i++)
+            {
+                for (int j = 0; j < m.Length; j++)
+                {
+                    m[i][j] *= value;
+                }
+            }
+            return m;
         }
 
         public float[] DoRank()
