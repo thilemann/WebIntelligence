@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,16 @@ namespace EigenValueDecomposition
         public bool HasFriend(string name)
         {
             return Friends.Contains(name);
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("Name: " + Name);
+            sb.AppendLine("Friends: " + string.Join("\t", Friends));
+            sb.AppendLine("Summary: " + Summary);
+            sb.AppendLine("Review: " + Review);
+            return sb.ToString();
         }
     }
 }

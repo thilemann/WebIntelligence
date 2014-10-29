@@ -15,21 +15,22 @@ namespace EigenValueDecomposition
         private const string UserPattern = @"user:\s(.+)";
         private const string FriendsPattern = @"friends:\t(.+)";
         private const string SummaryPattern = @"summary:\s(.+)";
-        private const string ReviewPattern = @"reviewText:\s(.+)";
+        private const string ReviewPattern = @"review:\s(.+)";
 
         private readonly string _filePath;
 
-        private List<User> _users;
+        private Community _community;
+        public Community Community
+        {
+            get { return _community; }
+        }
+
         public FriendListParser(string filePath)
         {
             this._filePath = filePath;
-            _users = new List<User>();
+            _community = new Community();
         }
 
-        public List<User> Users
-        {
-            get { return _users; }
-        }
 
         public void Parse()
         {
@@ -66,34 +67,13 @@ namespace EigenValueDecomposition
                 else if (reviewRegex.IsMatch(line))
                 {
                     review = reviewRegex.Match(line).Groups[1].Value;
-                    _users.Add(new User(name, (friends == null) ? new List<string>() : friends.ToList(), summary, review));
+                    _community.AddUser(new User(name, (friends == null) ? new List<string>() : friends.ToList(), summary, review));
                     name = null;
                     friends = null;
                     summary = null;
                     review = null;
                 }
             }
-        }
-
-        public double[,] GetAdjacencyMatrix()
-        {
-            double[,] matrix = Matrix.Create<double>(_users.Count, _users.Count, 0);
-
-            for (int i = 0; i < _users.Count; i++)
-            {
-                User user = _users[i];
-                string name = user.Name.ToLower();
-                for (int j = 0; j < _users.Count; j++)
-                {
-                    if (i == j)
-                        continue;
-                    if (_users[j].HasFriend(name))
-                    {
-                        matrix[i, j] = 1;
-                    }
-                }
-            }
-            return matrix;
         }
 
     }

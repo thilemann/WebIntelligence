@@ -1,19 +1,24 @@
 ﻿user: kaysen
-friends:	frederik	stefan
+friends:	frederik	bjarke	
 summary: *
 review: *
 
 user: stefan
-friends:	kaysen
+friends:	david	frederik
 summary: *
 review: *
 
 user: frederik
-friends:	kaysen
+friends:	kaysen	bjarke	stefan
 summary: *
 review: *
 
 user: david
-friends:	
+friends:	stefan
+summary: *
+review: *
+
+user: bjarke
+friends:	kaysen	frederik
 summary: *
 review: *
