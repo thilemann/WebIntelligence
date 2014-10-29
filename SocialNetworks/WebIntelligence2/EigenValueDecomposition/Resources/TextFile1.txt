@@ -1,0 +1,19 @@
+﻿user: kaysen
+friends:	frederik	stefan
+summary: *
+review: *
+
+user: stefan
+friends:	kaysen
+summary: *
+review: *
+
+user: frederik
+friends:	kaysen
+summary: *
+review: *
+
+user: david
+friends:	
+summary: *
+review: *
