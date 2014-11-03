@@ -3,14 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Accord.Math;
+using MathNet.Numerics.LinearAlgebra;
 
 namespace EigenValueDecomposition
 {
     class Community
     {
         public List<User> Users { get; private set; }
-        private double[,] _adjacencyMatrix;
+        private Matrix<double> _adjacencyMatrix;
+
+        public int Size
+        {
+            get { return Users.Count; }
+        }
 
         public Community()
         {
@@ -22,7 +27,7 @@ namespace EigenValueDecomposition
             Users.Add(user);
         }
 
-        public double[,] AdjacencyMatrix
+        public Matrix<double> AdjacencyMatrix
         {
             get
             {
@@ -31,15 +36,15 @@ namespace EigenValueDecomposition
                 return _adjacencyMatrix;
             }
         }
-        
-        private double[,] GetAdjacencyMatrix()
+
+        private Matrix<double> GetAdjacencyMatrix()
         {
-            double[,] matrix = Matrix.Create<double>(Users.Count, Users.Count, 0);
+            Matrix<double> matrix = Matrix<double>.Build.Dense(Users.Count, Users.Count, 0);
 
             for (int i = 0; i < Users.Count; i++)
             {
                 User user = Users[i];
-                string name = user.Name.ToLower();
+                string name = user.Name;
                 for (int j = 0; j < Users.Count; j++)
                 {
                     if (i == j)
