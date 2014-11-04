@@ -12,7 +12,7 @@ namespace EigenValueDecomposition
      *  user: lottie
         friends:	Jeramy	rosa	chloe	diahann	Gregg	laina	tonye	milena	joelle	Trevor	haily	Emanuel	cilka	rheta	alysa
         summary: *
-        reviewText: *
+        text: *
      */
 
     class User

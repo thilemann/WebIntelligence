@@ -105,7 +105,6 @@ namespace EigenValueDecomposition
 
                 if (community1.Size > 1 && community2.Size > 1)
                 {
-                    // TODO: make this work
                     lastDiff = largestDiff*0.6;
                     CommunityIdentifier identifier1 = new CommunityIdentifier(community1);
                     List<Community> communities1 = identifier1.Identify(lastDiff);
