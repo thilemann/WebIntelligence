@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace EigenValueDecomposition
+namespace SocialMediaAnalysis
 {
     class Community
     {
+        private readonly Guid _id;
+
         public List<User> Users { get; private set; }
         private Matrix<double> _adjacencyMatrix;
 
@@ -19,11 +21,13 @@ namespace EigenValueDecomposition
 
         public Community()
         {
+            _id = Guid.NewGuid();
             Users = new List<User>();
         }
 
         public void AddUser(User user)
         {
+            user.CommunityId = _id;
             Users.Add(user);
         }
 
@@ -58,7 +62,7 @@ namespace EigenValueDecomposition
             return matrix;
         }
 
-        public string toGraph()
+        public string ToGraph()
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < Users.Count; i++)

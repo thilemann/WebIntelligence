@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using EigenValueDecomposition;
+using SocialMediaAnalysis;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 

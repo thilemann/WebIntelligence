@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO.Pipes;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Sentiment
 {
@@ -16,17 +10,16 @@ namespace Sentiment
             //                          "test :hej :-lort (-: (: et ord her, flere ord!! FUCK lort";
             //const string testString_2 = "et ord... her, flere ord!! FUCK lort";
 
-            //Tokenize(testString_2, true);            
+            //Tokenize(testString_2, true);
 
             ReviewListParser parser = new ReviewListParser("Resources/SentimentTrainingData.txt");
             parser.Parse();
 
-            NaiveBayesClassifier classifier = new NaiveBayesClassifier(parser.Reviews);
+            NaiveBayesClassifier classifier = new NaiveBayesClassifier();
+            classifier.Train(parser.Reviews);
 
             Console.WriteLine("\nPres any key to quit!");
             Console.ReadLine();
         }
-
-        
     }
 }

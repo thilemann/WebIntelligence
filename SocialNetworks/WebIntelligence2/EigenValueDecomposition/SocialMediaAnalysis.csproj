@@ -7,8 +7,8 @@
     <ProjectGuid>{6B0D4F35-311E-4FDA-902F-9F61AC600320}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EigenValueDecomposition</RootNamespace>
-    <AssemblyName>EigenValueDecomposition</AssemblyName>
+    <RootNamespace>SocialMediaAnalysis</RootNamespace>
+    <AssemblyName>SocialMediaAnalysis</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

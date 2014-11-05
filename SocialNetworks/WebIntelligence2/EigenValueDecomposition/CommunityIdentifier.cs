@@ -10,7 +10,7 @@ using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
 using WebIntelligence2;
 
-namespace EigenValueDecomposition
+namespace SocialMediaAnalysis
 {
     class CommunityIdentifier
     {
