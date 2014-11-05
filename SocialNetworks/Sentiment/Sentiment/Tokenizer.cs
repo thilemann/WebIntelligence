@@ -53,19 +53,75 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public MatchCollection MatchShouting(string s)
+        public bool MatchShouting(string s)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!Char.IsUpper(s[i]))
+                {
+                    return false;
+                }
+            }
+
+        return true;
         }
 
-        public MatchCollection MatchMaskedCursing(string s)
+        public static MatchCollection MatchCursing(string s, out string result)
         {
-            throw new NotImplementedException();
+            string swearing = Regex.Escape("!#¤%&?@£$€^~+*()");
+            const string excludeChars = "(?![\\!]{1,}|[\\?]{1,}|[\\.]{1,})";
+            string pattern = @"(\s)*(" + excludeChars + "[" + swearing + "]){3,}";
+
+            Regex regex = new Regex(pattern);
+            result = regex.Replace(s, "");
+            return regex.Matches(s);
         }
 
-        public MatchCollection MatchLengthening(string s)
+        public static MatchCollection MatchMaskedCursing(string s, out string result)
         {
-            throw new NotImplementedException();
+            string maskingChars = Regex.Escape("*");
+            const string pattern = @"(\s)*((\w)*[\\*]+(\w)*)+(?!\s)*";
+
+            Regex regex = new Regex(pattern);
+            result = regex.Replace(s, "");
+            return regex.Matches(s);
+        }
+
+        public string MatchLengthening(string s)
+        {
+            int count = 0;
+            char letter = s[s.Length - 1];
+
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
+                if (count < 3)
+                {
+                    if (letter == s[i])
+                    {
+                        count += 1;
+                    }
+                    else if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+                else if (count >= 3)
+                {
+                    if (letter == s[i])
+                    {
+                        s = s.Remove(i, 1);
+                        count += 1;
+                    }
+                    if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+            }
+
+            return s;
         }
 
         public bool StartNegation(string token)
