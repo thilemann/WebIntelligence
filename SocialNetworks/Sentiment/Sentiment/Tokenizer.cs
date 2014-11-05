@@ -58,9 +58,25 @@ namespace Sentiment
             throw new NotImplementedException();
         }
 
-        public MatchCollection MatchMaskedCursing(string s)
+        public static MatchCollection MatchCursing(string s, out string result)
         {
-            throw new NotImplementedException();
+            string swearing = Regex.Escape("!#¤%&?@£$€^~+*()");
+            const string excludeChars = "(?![\\!]{1,}|[\\?]{1,}|[\\.]{1,})";
+            string pattern = @"(\s)*(" + excludeChars + "[" + swearing + "]){3,}";
+
+            Regex regex = new Regex(pattern);
+            result = regex.Replace(s, "");
+            return regex.Matches(s);
+        }
+
+        public static MatchCollection MatchMaskedCursing(string s, out string result)
+        {
+            string maskingChars = Regex.Escape("*");
+            const string pattern = @"(\s)*((\w)*[\\*]+(\w)*)+(?!\s)*";
+
+            Regex regex = new Regex(pattern);
+            result = regex.Replace(s, "");
+            return regex.Matches(s);
         }
 
         public MatchCollection MatchLengthening(string s)
