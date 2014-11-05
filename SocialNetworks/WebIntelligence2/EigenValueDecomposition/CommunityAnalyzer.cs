@@ -36,27 +36,40 @@ namespace SocialMediaAnalysis
             {
                 double scorePos = 0;
                 double scoreNeg = 0;
-                if (!string.Equals(user.Text, "*"))
+                int scoreCount = 0;
+                if (System.String.CompareOrdinal(user.FullReview, "* *") == 0)
                 {
                     List<string> friends = user.Friends;
                     foreach (var friendName in friends)
                     {
                         User friend = FindUser(community, friendName);
-                        if (friend == null)
+                        string review = friend.FullReview;
+                        if (System.String.CompareOrdinal(review, "* *") == 0) // Ensure that the friend has written a review
                             continue;
 
-                        string review = string.Join(" ", friend.FullReview);
+                        double pos = _sentimentClassifier.Score(review, Label.Pos);
+                        double neg = _sentimentClassifier.Score(review, Label.Neg);
 
-                        scorePos += _sentimentClassifier.Score(review, Label.Pos);
-                        scoreNeg += _sentimentClassifier.Score(review, Label.Neg);
-                        Label score = DetermineScore(scorePos, scoreNeg);
-                        WriteDecision(user.Name, score);
+                        if (friend.CommunityId != user.CommunityId || System.String.CompareOrdinal(friend.Name, "kyle") == 0)
+                        {
+                            pos *= 10;
+                            neg *= 10;
+                            scoreCount += 10;
+                        }
+                        else
+                        {
+                            scoreCount++;   
+                        }
+                        scorePos += pos;
+                        scoreNeg += neg;
                     }
+                    Label score = DetermineScore(scorePos/scoreCount, scoreNeg/scoreCount);
+                    WriteDecision(user.Name, score);
                 }
                 else
                 {
-                    scorePos += _sentimentClassifier.Score(user.FullReview, Label.Pos);
-                    scoreNeg += _sentimentClassifier.Score(user.FullReview, Label.Neg);
+                    scorePos = _sentimentClassifier.Score(user.FullReview, Label.Pos);
+                    scoreNeg = _sentimentClassifier.Score(user.FullReview, Label.Neg);
                     Label score = DetermineScore(scorePos, scoreNeg);
                     WriteScore(user.Name, score);
                 }
@@ -74,23 +87,24 @@ namespace SocialMediaAnalysis
 
         private void WriteScore(string name, Label score)
         {
-            int rating = 1;
+            int rating = 3;
             if (score == Label.Pos)
                 rating = 5;
+            else if (score == Label.Neg)
+                rating = 1;
 
             writer.WriteLine(string.Join("\t", name, rating, "*"));
         }
 
-        private Label DetermineScore(double scorePos, double scoreNeg)
+        private Label DetermineScore(double scorePosAvg, double scoreNegAvg)
         {
-            double diff = scorePos - scoreNeg;
-            Label result;
-            if (diff < 0.4)
-                result = Label.Neg;
-            else if (diff >= 0.6)
+            double diff = scorePosAvg - scoreNegAvg;
+            Label result = Label.Neutral;
+
+            if (diff > 0.1)
                 result = Label.Pos;
-            else
-                result = Label.Neutral;
+            else if (diff < -0.1)
+                result = Label.Neg;
 
             return result;
         }
@@ -117,6 +131,11 @@ namespace SocialMediaAnalysis
         {
             writer.Close();
             writer.Dispose();
+            foreach (var community in _communities)
+            {
+                community.Dispose();
+                _sentimentClassifier.Dispose();
+            }
         }
     }
 }

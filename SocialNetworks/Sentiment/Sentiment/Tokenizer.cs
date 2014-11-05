@@ -16,7 +16,7 @@ namespace Sentiment
             @"[.:;!?]";
         private const string NegSuffix = "_NEG";
 
-        public MatchCollection MatchEmoticons(string s, out string result)
+        private MatchCollection MatchEmoticons(string s, out string result)
         {
             string pattern = "";
             pattern = @"[<>]?";                         // hat
@@ -34,7 +34,7 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public MatchCollection MatchWords(string s)
+        private MatchCollection MatchWords(string s)
         {
             string pattern = "";
             pattern = @"(?:[a-z][a-z'\-_]+[a-z])";          // Words with apostrophes or dashes.
@@ -53,7 +53,7 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public bool MatchShouting(string s)
+        private bool IsShouting(string s)
         {
             for (int i = 0; i < s.Length; i++)
             {
@@ -66,28 +66,26 @@ namespace Sentiment
         return true;
         }
 
-        public static MatchCollection MatchCursing(string s, out string result)
+        private string MatchGrawlix(string s)
         {
             string swearing = Regex.Escape("!#¤%&?@£$€^~+*()");
             const string excludeChars = "(?![\\!]{1,}|[\\?]{1,}|[\\.]{1,})";
-            string pattern = @"(\s)*(" + excludeChars + "[" + swearing + "]){3,}";
+            string pattern = @"(?!\s)*(" + excludeChars + "[" + swearing + "]){3,}";
 
             Regex regex = new Regex(pattern);
-            result = regex.Replace(s, "");
-            return regex.Matches(s);
+            return regex.Replace(s, "_GRAWLIX");
         }
 
-        public static MatchCollection MatchMaskedCursing(string s, out string result)
+        private string MatchMaskedCursing(string s)
         {
             string maskingChars = Regex.Escape("*");
-            const string pattern = @"(\s)*((\w)*[\\*]+(\w)*)+(?!\s)*";
+            string pattern = @"(?!\s)*((\w)*[" + maskingChars + @"]+(\w)*)+(?!\s)*";
 
             Regex regex = new Regex(pattern);
-            result = regex.Replace(s, "");
-            return regex.Matches(s);
+            return regex.Replace(s, "_CURSE");
         }
 
-        public string MatchLengthening(string s)
+        private string Lengthening(string s)
         {
             int count = 0;
             char letter = s[s.Length - 1];
@@ -124,12 +122,12 @@ namespace Sentiment
             return s;
         }
 
-        public bool StartNegation(string token)
+        private bool StartNegation(string token)
         {
             return Regex.IsMatch(token, negationStartPattern);
         }
 
-        public bool StopNegation(String token)
+        private bool StopNegation(String token)
         {
             return Regex.IsMatch(token, negationStopPattern);
         }
@@ -139,16 +137,24 @@ namespace Sentiment
             List<string> tokensList = new List<string>();
             string result;
             MatchCollection emoticons = MatchEmoticons(s, out result);
-            foreach (Match match in emoticons)
+            foreach (Match emoticonMatch in emoticons) // Add emoticons
             {
-                tokensList.Add(match.Value);
-            }
+                tokensList.Add(emoticonMatch.Value);
+            }  
 
+            result = MatchMaskedCursing(result);
+            result = MatchGrawlix(result);
+ 
             MatchCollection matchWords = MatchWords(result);
             bool isNegating = false;
             foreach (Match match in matchWords)
             {
-                string word = match.Value.ToLower();
+                string word = match.Value;
+                if (!IsShouting(word))
+                    word = word.ToLower();
+
+                word = Lengthening(word);
+
                 if (!isNegating && StartNegation(word))
                 {
                     tokensList.Add(word);

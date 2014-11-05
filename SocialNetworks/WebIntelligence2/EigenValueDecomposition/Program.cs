@@ -12,12 +12,12 @@ namespace SocialMediaAnalysis
         static void Main(string[] args)
         {
             DateTime start = DateTime.Now;
-            Console.WriteLine("[START]\t\tTraining started");
+            Console.WriteLine("[START]\tTraining started");
             NaiveBayesClassifier sentimentClassifier = new NaiveBayesClassifier();
             sentimentClassifier.Train(new TestDataParser("Resources/SentimentTrainingData.txt"));
-            Console.WriteLine("[END]\t\tTraining");
+            Console.WriteLine("[END]\tTraining");
             Console.WriteLine();
-            Console.WriteLine("[START]\t\tFriendlist parsing");
+            Console.WriteLine("[START]\tFriendlist parsing");
             FriendListParser parser = new FriendListParser("Resources/friendships.reviews.txt");
             parser.Parse();
             Console.WriteLine("[END]\t\tFriendlist parsing");
@@ -38,7 +38,11 @@ namespace SocialMediaAnalysis
             foreach (var community in subCommunities)
             {
                 Console.WriteLine(community.Size);
+                community.Dispose();
             }
+            communityAnalyzer.Dispose();
+            communityIdentifier.Dispose();
+            sentimentClassifier.Dispose();
 
             Console.WriteLine(DateTime.Now.Subtract(start).ToString("g"));
             Console.WriteLine("Finished everything. Press to exit");
