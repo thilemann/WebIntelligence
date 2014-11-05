@@ -83,14 +83,17 @@ namespace Sentiment
             List<string> tokensList = new List<string>();
             string result;
             MatchCollection emoticons = MatchEmoticons(s, out result);
+            foreach (Match match in emoticons)
+            {
+                tokensList.Add(match.Value);
+            }
 
-            MatchCollection matchWords = null;
-            matchWords = MatchWords(result ?? s);
+            MatchCollection matchWords = MatchWords(result);
             bool isNegating = false;
             foreach (Match match in matchWords)
             {
                 string word = match.Value.ToLower();
-                if (StartNegation(word))
+                if (!isNegating && StartNegation(word))
                 {
                     tokensList.Add(word);
                     isNegating = true;

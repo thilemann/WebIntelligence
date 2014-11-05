@@ -15,9 +15,12 @@ namespace Sentiment
         private int _posReview = 0;
         private int _negReview = 0;
 
-        public NaiveBayesClassifier(List<Review> reviews)
+        public NaiveBayesClassifier()
         {
-            _reviews = reviews;
+        }
+
+        public void Train(List<Review> reviews)
+        {
             InitializeReview_N(reviews);
 
             Tokenizer tokenizer = new Tokenizer();
@@ -52,7 +55,7 @@ namespace Sentiment
             double summation = 0;
             foreach (var word in vocabulary.Keys)
             {
-                summation += p(word, rating);
+                summation += Math.Log(p(word, rating));
             }
             return Math.Log(p(rating)) + summation;
         }
