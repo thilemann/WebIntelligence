@@ -53,9 +53,17 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public MatchCollection MatchShouting(string s)
+        public bool MatchShouting(string s)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!Char.IsUpper(s[i]))
+                {
+                    return false;
+                }
+            }
+
+        return true;
         }
 
         public MatchCollection MatchMaskedCursing(string s)
