@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Microsoft.SqlServer.Server;
 
-namespace EigenValueDecomposition
+namespace SocialMediaAnalysis
 {
     /*
      *  user: lottie
@@ -24,6 +20,8 @@ namespace EigenValueDecomposition
             Summary = summary;
             Review = review;
         }
+
+        public Guid CommunityId { get; set; }
 
         public string Name { get; set; }
 

@@ -1,6 +1,6 @@
 ﻿namespace Sentiment
 {
-    enum Label
+    public enum Label
     {
         Neutral,
         Pos,

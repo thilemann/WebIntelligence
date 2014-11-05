@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace EigenValueDecomposition
+namespace SocialMediaAnalysis
 {
     class FriendListParser
     {
@@ -26,7 +26,7 @@ namespace EigenValueDecomposition
 
         public FriendListParser(string filePath)
         {
-            this._filePath = filePath;
+            _filePath = filePath;
             _community = new Community();
         }
 
