@@ -63,9 +63,41 @@ namespace Sentiment
             throw new NotImplementedException();
         }
 
-        public MatchCollection MatchLengthening(string s)
+        public string MatchLengthening(string s)
         {
-            throw new NotImplementedException();
+            int count = 0;
+            char letter = s[0];
+
+            for (int i = s.Length - 1; i >= 0; i++)
+            {
+                if (count < 3)
+                {
+                    if (letter == s[i])
+                    {
+                        count += 1;
+                    }
+                    else if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+                else if (count >= 3)
+                {
+                    if (letter == s[i])
+                    {
+                        s.Remove(s[i], 1);
+                        count += 1;
+                    }
+                    if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+            }
+
+            return s;
         }
 
         public bool StartNegation(string token)
