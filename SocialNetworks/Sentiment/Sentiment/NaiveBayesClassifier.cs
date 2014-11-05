@@ -10,7 +10,7 @@ namespace Sentiment
     public class NaiveBayesClassifier
     {
         private Dictionary<string, NaiveTerm> vocabulary = new Dictionary<string, NaiveTerm>();
-        private List<Review> _reviews;
+        private List<Review> _trainingReviews;
 
         private int _posReview = 0;
         private int _negReview = 0;
@@ -22,14 +22,18 @@ namespace Sentiment
             tokenizer = new Tokenizer();
         }
 
-        public void Train(List<Review> reviews)
+        public void Train(TestDataParser parser)
         {
-            _reviews = reviews;
+            int curPos = Console.CursorLeft;
+            parser.Parse();
+            _trainingReviews = parser.Reviews;
+            int reviewCount = _trainingReviews.Count;
 
-            InitializeReview_N(reviews);
+            InitializeReview_N(_trainingReviews);
 
-            foreach (var review in _reviews)
+            for (int i = 0; i < reviewCount; i++)
             {
+                Review review = _trainingReviews[i];
                 foreach (var token in tokenizer.Tokenize(review.Summary))
                 {
                     AddToVocabulary(token, review.Rating);
@@ -38,7 +42,10 @@ namespace Sentiment
                 {
                     AddToVocabulary(token, review.Rating);
                 }
+                Console.SetCursorPosition(curPos, Console.CursorTop);
+                Console.Write("{0}%", (((float)i) / reviewCount) * 100);
             }
+            Console.WriteLine();
         }
 
         public double Score(string text, Label rating)
@@ -93,12 +100,12 @@ namespace Sentiment
 
         public double p(Label rating)
         {
-            return N(rating) / _reviews.Count;
+            return N(rating) / _trainingReviews.Count;
         }
 
         public double p(string word, Label rating)
         {
-            return N(word, rating) / _reviews.Count;
+            return N(word, rating) / _trainingReviews.Count;
         }
 
         public double NotP(string word, Label rating)
@@ -119,7 +126,7 @@ namespace Sentiment
 
         private void InitializeReview_N(List<Review> reviews)
         {
-            foreach (var review in _reviews)
+            foreach (var review in reviews)
             {
                 if (review.Rating == Label.Neg)
                     _negReview++;
