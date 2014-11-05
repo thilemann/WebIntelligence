@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.Providers.LinearAlgebra.Mkl;
-using WebIntelligence2;
+using SocialMediaAnalysis;
 
 namespace SocialMediaAnalysis
 {

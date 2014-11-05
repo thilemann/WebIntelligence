@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Community.cs" />
+    <Compile Include="CommunityAnalyzer.cs" />
     <Compile Include="CommunityIdentifier.cs" />
     <Compile Include="FriendListParser.cs" />
     <Compile Include="MatrixHelper.cs" />
@@ -93,6 +94,12 @@
     <Content Include="Resources\TextFile1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Sentiment\Sentiment\Sentiment.csproj">
+      <Project>{d8aab839-332e-4bfb-a1b1-b732d3594412}</Project>
+      <Name>Sentiment</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

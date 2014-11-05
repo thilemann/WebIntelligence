@@ -26,7 +26,7 @@ namespace SocialMediaAnalysis
 
         public FriendListParser(string filePath)
         {
-            this._filePath = filePath;
+            _filePath = filePath;
             _community = new Community();
         }
 

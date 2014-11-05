@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 
 namespace SocialMediaAnalysis
@@ -12,6 +12,12 @@ namespace SocialMediaAnalysis
         private readonly Guid _id;
 
         public List<User> Users { get; private set; }
+
+        public Guid Id
+        {
+            get { return _id; }
+        }
+
         private Matrix<double> _adjacencyMatrix;
 
         public int Size
@@ -29,6 +35,11 @@ namespace SocialMediaAnalysis
         {
             user.CommunityId = _id;
             Users.Add(user);
+        }
+
+        public User GetUser(string name)
+        {
+            return Users.FirstOrDefault(x => string.Equals(x.Name, name));
         }
 
         public Matrix<double> AdjacencyMatrix

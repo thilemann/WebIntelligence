@@ -15,7 +15,7 @@ namespace Sentiment
      */
 
 
-    class Review
+    public class Review
     {
         private string _productId;
         private string _userId;

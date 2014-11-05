@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebIntelligence2", "EigenValueDecomposition\WebIntelligence2.csproj", "{6B0D4F35-311E-4FDA-902F-9F61AC600320}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaAnalysis", "EigenValueDecomposition\SocialMediaAnalysis.csproj", "{6B0D4F35-311E-4FDA-902F-9F61AC600320}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sentiment", "..\Sentiment\Sentiment\Sentiment.csproj", "{D8AAB839-332E-4BFB-A1B1-B732D3594412}"
 EndProject
