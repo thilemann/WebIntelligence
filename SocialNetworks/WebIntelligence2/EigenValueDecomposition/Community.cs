@@ -57,5 +57,25 @@ namespace EigenValueDecomposition
             }
             return matrix;
         }
+
+        public string toGraph()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Users.Count; i++)
+            {
+                User user = Users[i];
+                string name = user.Name;
+                for (int j = 0; j < Users.Count; j++)
+                {
+                    if (i == j)
+                        continue;
+                    if (Users[j].HasFriend(name))
+                    {
+                        sb.AppendLine(user.Name + "," + Users[j].Name);
+                    }
+                }
+            }
+            return sb.ToString();
+        }
     }
 }
