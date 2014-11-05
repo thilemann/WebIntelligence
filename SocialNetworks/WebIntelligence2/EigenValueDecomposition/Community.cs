@@ -1,15 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace EigenValueDecomposition
+namespace SocialMediaAnalysis
 {
     class Community
     {
+        private readonly Guid _id;
+
         public List<User> Users { get; private set; }
+
+        public Guid Id
+        {
+            get { return _id; }
+        }
+
         private Matrix<double> _adjacencyMatrix;
 
         public int Size
@@ -19,12 +27,19 @@ namespace EigenValueDecomposition
 
         public Community()
         {
+            _id = Guid.NewGuid();
             Users = new List<User>();
         }
 
         public void AddUser(User user)
         {
+            user.CommunityId = _id;
             Users.Add(user);
+        }
+
+        public User GetUser(string name)
+        {
+            return Users.FirstOrDefault(x => string.Equals(x.Name, name));
         }
 
         public Matrix<double> AdjacencyMatrix
@@ -56,6 +71,26 @@ namespace EigenValueDecomposition
                 }
             }
             return matrix;
+        }
+
+        public string ToGraph()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < Users.Count; i++)
+            {
+                User user = Users[i];
+                string name = user.Name;
+                for (int j = 0; j < Users.Count; j++)
+                {
+                    if (i == j)
+                        continue;
+                    if (Users[j].HasFriend(name))
+                    {
+                        sb.AppendLine(user.Name + "," + Users[j].Name);
+                    }
+                }
+            }
+            return sb.ToString();
         }
     }
 }

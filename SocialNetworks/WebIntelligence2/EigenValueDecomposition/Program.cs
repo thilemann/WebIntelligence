@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using EigenValueDecomposition;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace WebIntelligence2
+namespace SocialMediaAnalysis
 {
     class Program
     {
 
         static void Main(string[] args)
         {
-            Control.UseNativeMKL();
-
             DateTime start = DateTime.Now;
-            FriendListParser parser = new FriendListParser("Resources/friendships.txt");
+            FriendListParser parser = new FriendListParser("Resources/friendships.reviews.txt");
             //FriendListParser parser = new FriendListParser("Resources/TextFile1.txt");
             parser.Parse();
 

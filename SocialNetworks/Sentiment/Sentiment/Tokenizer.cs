@@ -53,9 +53,17 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public MatchCollection MatchShouting(string s)
+        public bool MatchShouting(string s)
         {
-            throw new NotImplementedException();
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (!Char.IsUpper(s[i]))
+                {
+                    return false;
+                }
+            }
+
+        return true;
         }
 
         public static MatchCollection MatchCursing(string s, out string result)
@@ -79,9 +87,41 @@ namespace Sentiment
             return regex.Matches(s);
         }
 
-        public MatchCollection MatchLengthening(string s)
+        public string MatchLengthening(string s)
         {
-            throw new NotImplementedException();
+            int count = 0;
+            char letter = s[s.Length - 1];
+
+            for (int i = s.Length - 1; i >= 0; i--)
+            {
+                if (count < 3)
+                {
+                    if (letter == s[i])
+                    {
+                        count += 1;
+                    }
+                    else if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+                else if (count >= 3)
+                {
+                    if (letter == s[i])
+                    {
+                        s = s.Remove(i, 1);
+                        count += 1;
+                    }
+                    if (letter != s[i])
+                    {
+                        letter = s[i];
+                        count = 1;
+                    }
+                }
+            }
+
+            return s;
         }
 
         public bool StartNegation(string token)
@@ -99,14 +139,17 @@ namespace Sentiment
             List<string> tokensList = new List<string>();
             string result;
             MatchCollection emoticons = MatchEmoticons(s, out result);
+            foreach (Match match in emoticons)
+            {
+                tokensList.Add(match.Value);
+            }
 
-            MatchCollection matchWords = null;
-            matchWords = MatchWords(result ?? s);
+            MatchCollection matchWords = MatchWords(result);
             bool isNegating = false;
             foreach (Match match in matchWords)
             {
                 string word = match.Value.ToLower();
-                if (StartNegation(word))
+                if (!isNegating && StartNegation(word))
                 {
                     tokensList.Add(word);
                     isNegating = true;

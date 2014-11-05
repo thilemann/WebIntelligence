@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace WebIntelligence2
+namespace SocialMediaAnalysis
 {
     class MatrixHelper
     {

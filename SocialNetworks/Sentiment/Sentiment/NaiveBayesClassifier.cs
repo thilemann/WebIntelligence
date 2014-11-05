@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Sentiment
 {
-    class NaiveBayesClassifier
+    public class NaiveBayesClassifier
     {
         private Dictionary<string, NaiveTerm> vocabulary = new Dictionary<string, NaiveTerm>();
         private List<Review> _reviews;
@@ -15,12 +15,18 @@ namespace Sentiment
         private int _posReview = 0;
         private int _negReview = 0;
 
-        public NaiveBayesClassifier(List<Review> reviews)
+        Tokenizer tokenizer;
+
+        public NaiveBayesClassifier()
+        {
+            tokenizer = new Tokenizer();
+        }
+
+        public void Train(List<Review> reviews)
         {
             _reviews = reviews;
-            InitializeReview_N(reviews);
 
-            Tokenizer tokenizer = new Tokenizer();
+            InitializeReview_N(reviews);
 
             foreach (var review in _reviews)
             {
@@ -35,6 +41,12 @@ namespace Sentiment
             }
         }
 
+        public double Score(string text, Label rating)
+        {
+            List<string> tokens = tokenizer.Tokenize(text);
+            return logS(tokens, rating);
+        }
+
         private void AddToVocabulary(string word, Label rating)
         {
             if (vocabulary.ContainsKey(word))
@@ -47,20 +59,20 @@ namespace Sentiment
             }
         }
 
-        public double logS(Review review, Label rating)
+        public double logS(List<string> tokenizedWords, Label rating)
         {
             double summation = 0;
-            foreach (var word in vocabulary.Keys)
+            foreach (var word in tokenizedWords)
             {
-                summation += p(word, rating);
+                summation += Math.Log(p(word, rating));
             }
             return Math.Log(p(rating)) + summation;
         }
 
-        public double S(Review review, Label rating)
+        public double S(List<string> tokenizedWords, Label rating)
         {
             double result = 1;
-            foreach (var word in vocabulary.Keys)
+            foreach (var word in tokenizedWords)
             {
                 double pValue = p(word, rating);
                 result *= pValue / (1 - pValue);
