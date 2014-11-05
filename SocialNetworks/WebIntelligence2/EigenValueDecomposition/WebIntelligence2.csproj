@@ -68,12 +68,9 @@
     <Compile Include="Community.cs" />
     <Compile Include="CommunityIdentifier.cs" />
     <Compile Include="FriendListParser.cs" />
-    <Compile Include="Label.cs" />
     <Compile Include="MatrixHelper.cs" />
-    <Compile Include="NaiveBayesClassifier.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Review.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
