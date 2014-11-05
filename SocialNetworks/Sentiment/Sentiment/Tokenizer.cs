@@ -66,9 +66,9 @@ namespace Sentiment
         public string MatchLengthening(string s)
         {
             int count = 0;
-            char letter = s[0];
+            char letter = s[s.Length - 1];
 
-            for (int i = s.Length - 1; i >= 0; i++)
+            for (int i = s.Length - 1; i >= 0; i--)
             {
                 if (count < 3)
                 {
@@ -86,7 +86,7 @@ namespace Sentiment
                 {
                     if (letter == s[i])
                     {
-                        s.Remove(s[i], 1);
+                        s = s.Remove(i, 1);
                         count += 1;
                     }
                     if (letter != s[i])

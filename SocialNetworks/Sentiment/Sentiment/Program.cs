@@ -28,6 +28,7 @@ namespace Sentiment
 
             Tokenizer t = new Tokenizer();
 
+            Console.WriteLine("heeeeeeeeeeeeeeeeeeeeeeeeeeeyyaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             Console.WriteLine(t.MatchLengthening("heeeeeeeeeeeeeeeeeeeeeeeeeeeyyaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
         }
 
