@@ -84,6 +84,9 @@
     <Content Include="MathNet.Numerics.MKL.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\friendships.reviews.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\friendships.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
