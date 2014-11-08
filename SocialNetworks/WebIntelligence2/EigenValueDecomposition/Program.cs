@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using Sentiment;
 
 namespace SocialMediaAnalysis
 {
@@ -11,20 +12,37 @@ namespace SocialMediaAnalysis
         static void Main(string[] args)
         {
             DateTime start = DateTime.Now;
+            Console.WriteLine("[START]\tTraining started");
+            NaiveBayesClassifier sentimentClassifier = new NaiveBayesClassifier();
+            sentimentClassifier.Train(new TestDataParser("Resources/SentimentTrainingData.txt"));
+            Console.WriteLine("[END]\tTraining");
+            Console.WriteLine();
+            Console.WriteLine("[START]\tFriendlist parsing");
             FriendListParser parser = new FriendListParser("Resources/friendships.reviews.txt");
-            //FriendListParser parser = new FriendListParser("Resources/TextFile1.txt");
             parser.Parse();
-
-            //PrintCommunity(parser.Community);
-
+            Console.WriteLine("[END]\t\tFriendlist parsing");
+            Console.WriteLine();
+            Console.WriteLine("[START]\t\tIdentifying communities");
             CommunityIdentifier communityIdentifier = new CommunityIdentifier(parser.Community);
             List<Community> subCommunities = communityIdentifier.Identify();
+            Console.WriteLine("[END]\t\tIdentifying communities");
+            Console.WriteLine();
+            Console.WriteLine("[START]\t\tAnalysing communities");
+            CommunityAnalyzer communityAnalyzer = new CommunityAnalyzer(sentimentClassifier, subCommunities);
+            string filename = "result.csv";
+            communityAnalyzer.Analyze(filename);
+            Console.WriteLine("[END]\t\tAnalysing communities: Results written to {0}", filename);
+
             Console.WriteLine("Identied communities: " + subCommunities.Count);
             Console.WriteLine("\nSub communities:");
             foreach (var community in subCommunities)
             {
                 Console.WriteLine(community.Size);
+                community.Dispose();
             }
+            communityAnalyzer.Dispose();
+            communityIdentifier.Dispose();
+            sentimentClassifier.Dispose();
 
             Console.WriteLine(DateTime.Now.Subtract(start).ToString("g"));
             Console.WriteLine("Finished everything. Press to exit");

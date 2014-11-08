@@ -14,16 +14,17 @@ namespace Sentiment
         {
             //const string testString_1 = "<:) >:) :) :-) :-D :-d :P :d :D :-) " +
             //                          "test :hej :-lort (-: (: et ord her, flere ord!! FUCK lort";
-            //const string testString_2 = "et ord... her, flere ord!! FUCK lort";
+            const string testString_2 = "et ord... her, not flere ord!!! HEEEEEEEEEEEEEY heeeey #%¤& s**t FUCK lort";
 
-            //Tokenize(testString_2, true);            
+            Tokenizer tokenizer = new Tokenizer();
+            List<string> result = tokenizer.Tokenize(testString_2, true);            
 
-            ReviewListParser parser = new ReviewListParser("Resources/SentimentTrainingData.txt");
-            parser.Parse();
+            //ReviewListParser parser = new ReviewListParser("Resources/SentimentTrainingData.txt");
+            //parser.Parse();
 
-            NaiveBayesClassifier classifier = new NaiveBayesClassifier(parser.Reviews);
+            //NaiveBayesClassifier classifier = new NaiveBayesClassifier(parser.Reviews);
 
-            Console.WriteLine("\nPres any key to quit!");
+            //Console.WriteLine("\nPres any key to quit!");
             Console.ReadLine();
         }
 

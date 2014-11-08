@@ -12,7 +12,7 @@ using SocialMediaAnalysis;
 
 namespace SocialMediaAnalysis
 {
-    class CommunityIdentifier
+    class CommunityIdentifier : IDisposable
     {
         private const string EigenValueMatrixFile = "Resources/eigenValueMatrix.csv";
 
@@ -42,19 +42,6 @@ namespace SocialMediaAnalysis
             Console.WriteLine("laplacian: " + DateTime.Now.Subtract(start).ToString("g"));
             MathNet.Numerics.LinearAlgebra.Factorization.Evd<double> numericsEigen = numericsLaplacianMatrix.Evd(Symmetricity.Symmetric);
             Console.WriteLine("eigenvector: " + DateTime.Now.Subtract(start).ToString("g"));
-
-            //using (StreamWriter writer = new StreamWriter("eigen.csv"))
-            //{
-            //    for (int i = 0; i < numericsEigen.EigenVectors.ColumnCount; i++)
-            //    {
-            //        writer.Write(i +";");
-            //    }
-            //    writer.Write("\n");
-            //    for (int i = 0; i < numericsEigen.EigenVectors.RowCount; i++)
-            //    {
-            //        writer.WriteLine(string.Join(";", numericsEigen.EigenVectors.Row(i)));
-            //    }
-            //}
 
             return numericsEigen.EigenVectors.Column(1);
         }
@@ -134,6 +121,12 @@ namespace SocialMediaAnalysis
             }
             
             return eigenvector.OrderBy(kvp => kvp.Value).ToList();
+        }
+
+        public void Dispose()
+        {
+            _eigenvector = null;
+            _rootCommunity = null;
         }
     }
 }

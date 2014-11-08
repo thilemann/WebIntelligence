@@ -7,7 +7,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace SocialMediaAnalysis
 {
-    class Community
+    class Community : IDisposable
     {
         private readonly Guid _id;
 
@@ -91,6 +91,12 @@ namespace SocialMediaAnalysis
                 }
             }
             return sb.ToString();
+        }
+
+        public void Dispose()
+        {
+            _adjacencyMatrix = null;
+            Users = null;
         }
     }
 }

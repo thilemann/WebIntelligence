@@ -13,12 +13,12 @@ namespace SocialMediaAnalysis
 
     class User
     {
-        public User(string name, List<string> friends, string summary, string review)
+        public User(string name, List<string> friends, string summary, string text)
         {
             Name = name;
             Friends = friends;
             Summary = summary;
-            Review = review;
+            Text = text;
         }
 
         public Guid CommunityId { get; set; }
@@ -29,7 +29,12 @@ namespace SocialMediaAnalysis
 
         public string Summary { get; set; }
 
-        public string Review { get; set; }
+        public string Text { get; set; }
+
+        public string FullReview
+        {
+            get { return string.Join(" ", Summary, Text); }
+        }
 
         public bool HasFriend(string name)
         {
@@ -42,7 +47,7 @@ namespace SocialMediaAnalysis
             sb.AppendLine("Name: " + Name);
             sb.AppendLine("Friends: " + string.Join("\t", Friends));
             sb.AppendLine("Summary: " + Summary);
-            sb.AppendLine("Review: " + Review);
+            sb.AppendLine("Text: " + Text);
             return sb.ToString();
         }
     }
