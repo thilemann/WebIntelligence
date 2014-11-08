@@ -22,11 +22,10 @@ namespace Sentiment
             _tokenizer = new Tokenizer();
         }
 
-        public void Train(TestDataParser parser)
+        public void Train(List<Review> reviews)
         {
             int curPos = Console.CursorLeft;
-            parser.Parse();
-            _trainingReviews = parser.Reviews;
+            _trainingReviews = reviews;
             int reviewCount = _trainingReviews.Count;
 
             InitializeReview_N(_trainingReviews);
@@ -47,6 +46,12 @@ namespace Sentiment
                 Console.Write("{0}%", Convert.ToInt32(progress));
             }
             Console.WriteLine();
+        }
+
+        public void Train(TestDataParser parser)
+        {
+            parser.Parse();
+            Train(parser.Reviews);
         }
 
         public double Score(string text, Label rating)
