@@ -50,6 +50,11 @@ namespace SocialMediaAnalysis
                         double pos = _sentimentClassifier.Score(review, Label.Pos);
                         double neg = _sentimentClassifier.Score(review, Label.Neg);
 
+                        if (double.IsInfinity(neg))
+                            neg = 0;
+                        if (double.IsInfinity(pos))
+                            pos = 0;
+
                         if (friend.CommunityId != user.CommunityId || System.String.CompareOrdinal(friend.Name, "kyle") == 0)
                         {
                             pos *= 10;
@@ -64,28 +69,33 @@ namespace SocialMediaAnalysis
                         scoreNeg += neg;
                     }
                     Label score = DetermineScore(scorePos/scoreCount, scoreNeg/scoreCount);
-                    WriteDecision(user.Name, score);
+                    WriteDecision(user, score);
                 }
                 else
                 {
                     scorePos = _sentimentClassifier.Score(user.FullReview, Label.Pos);
                     scoreNeg = _sentimentClassifier.Score(user.FullReview, Label.Neg);
+
+                    if (double.IsInfinity(scoreNeg))
+                        scoreNeg = 0;
+                    if (double.IsInfinity(scorePos))
+                        scorePos = 0;
                     Label score = DetermineScore(scorePos, scoreNeg);
-                    WriteScore(user.Name, score);
+                    WriteScore(user, score);
                 }
             }
         }
 
-        private void WriteDecision(string name, Label score)
+        private void WriteDecision(User user, Label score)
         {
             string decision = "no";
             if (score == Label.Pos)
                 decision = "yes";
 
-            writer.WriteLine(string.Join("\t", name, "*", decision));
+            writer.WriteLine(string.Join("\t", user.Name, "*", decision, user.CommunityId));
         }
 
-        private void WriteScore(string name, Label score)
+        private void WriteScore(User user, Label score)
         {
             int rating = 3;
             if (score == Label.Pos)
@@ -93,7 +103,7 @@ namespace SocialMediaAnalysis
             else if (score == Label.Neg)
                 rating = 1;
 
-            writer.WriteLine(string.Join("\t", name, rating, "*"));
+            writer.WriteLine(string.Join("\t", user.Name, rating, "*", user.CommunityId));
         }
 
         private Label DetermineScore(double scorePosAvg, double scoreNegAvg)

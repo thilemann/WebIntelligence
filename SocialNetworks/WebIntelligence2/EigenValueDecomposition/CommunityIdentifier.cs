@@ -77,13 +77,13 @@ namespace SocialMediaAnalysis
                 for (int i = 0; i < nodeIndexBeforeDiff; i++)
                 {
                     User user = _rootCommunity.Users[_eigenvector[i].Key];
-                    community1.Users.Add(user);
+                    community1.AddUser(user);
                 }
                 Community community2 = new Community();
                 for (int i = nodeIndexBeforeDiff; i < _eigenvector.Count; i++)
                 {
                     User user = _rootCommunity.Users[_eigenvector[i].Key];
-                    community2.Users.Add(user);
+                    community2.AddUser(user);
                 }
 
                 Console.WriteLine("Community1: " + community1.Size);

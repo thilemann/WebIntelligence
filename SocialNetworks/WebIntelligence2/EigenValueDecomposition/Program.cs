@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Sentiment;
@@ -11,7 +12,6 @@ namespace SocialMediaAnalysis
 
         static void Main(string[] args)
         {
-            DateTime start = DateTime.Now;
             Console.WriteLine("[START]\tTraining started");
             NaiveBayesClassifier sentimentClassifier = new NaiveBayesClassifier();
             sentimentClassifier.Train(new TestDataParser("Resources/SentimentTrainingData.txt"));
@@ -20,10 +20,12 @@ namespace SocialMediaAnalysis
             Console.WriteLine("[START]\tFriendlist parsing");
             FriendListParser parser = new FriendListParser("Resources/friendships.reviews.txt");
             parser.Parse();
+            File.WriteAllText("graph.csv", parser.Community.ToGraph());
             Console.WriteLine("[END]\t\tFriendlist parsing");
             Console.WriteLine();
             Console.WriteLine("[START]\t\tIdentifying communities");
             CommunityIdentifier communityIdentifier = new CommunityIdentifier(parser.Community);
+            DateTime start = DateTime.Now;
             List<Community> subCommunities = communityIdentifier.Identify();
             Console.WriteLine("[END]\t\tIdentifying communities");
             Console.WriteLine();

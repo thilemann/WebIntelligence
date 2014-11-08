@@ -10,8 +10,19 @@ namespace SocialMediaAnalysis
     class Community : IDisposable
     {
         private readonly Guid _id;
+        private List<User> _users; 
 
-        public List<User> Users { get; private set; }
+        public List<User> Users
+        {
+            get
+            {
+                foreach (var user in _users)
+                {
+                    user.CommunityId = _id;
+                }
+                return _users;
+            }
+        }
 
         public Guid Id
         {
@@ -22,24 +33,24 @@ namespace SocialMediaAnalysis
 
         public int Size
         {
-            get { return Users.Count; }
+            get { return _users.Count; }
         }
 
         public Community()
         {
             _id = Guid.NewGuid();
-            Users = new List<User>();
+            _users = new List<User>();
         }
 
         public void AddUser(User user)
         {
             user.CommunityId = _id;
-            Users.Add(user);
+            _users.Add(user);
         }
 
         public User GetUser(string name)
         {
-            return Users.FirstOrDefault(x => string.Equals(x.Name, name));
+            return _users.FirstOrDefault(x => string.Equals(x.Name, name));
         }
 
         public Matrix<double> AdjacencyMatrix
@@ -54,17 +65,17 @@ namespace SocialMediaAnalysis
 
         private Matrix<double> GetAdjacencyMatrix()
         {
-            Matrix<double> matrix = Matrix<double>.Build.Dense(Users.Count, Users.Count, 0);
+            Matrix<double> matrix = Matrix<double>.Build.Dense(_users.Count, _users.Count, 0);
 
-            for (int i = 0; i < Users.Count; i++)
+            for (int i = 0; i < _users.Count; i++)
             {
-                User user = Users[i];
+                User user = _users[i];
                 string name = user.Name;
-                for (int j = 0; j < Users.Count; j++)
+                for (int j = 0; j < _users.Count; j++)
                 {
                     if (i == j)
                         continue;
-                    if (Users[j].HasFriend(name))
+                    if (_users[j].HasFriend(name))
                     {
                         matrix[i, j] = 1;
                     }
@@ -76,17 +87,17 @@ namespace SocialMediaAnalysis
         public string ToGraph()
         {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < Users.Count; i++)
+            for (int i = 0; i < _users.Count; i++)
             {
-                User user = Users[i];
+                User user = _users[i];
                 string name = user.Name;
-                for (int j = 0; j < Users.Count; j++)
+                for (int j = 0; j < _users.Count; j++)
                 {
                     if (i == j)
                         continue;
-                    if (Users[j].HasFriend(name))
+                    if (_users[j].HasFriend(name))
                     {
-                        sb.AppendLine(user.Name + "," + Users[j].Name);
+                        sb.AppendLine(user.Name + "," + _users[j].Name);
                     }
                 }
             }
@@ -96,7 +107,7 @@ namespace SocialMediaAnalysis
         public void Dispose()
         {
             _adjacencyMatrix = null;
-            Users = null;
+            _users = null;
         }
     }
 }

@@ -9,6 +9,8 @@ namespace Sentiment
 {
     public class NaiveBayesClassifier : IDisposable
     {
+        private const int C_COUNT = 2;
+
         private Dictionary<string, NaiveTerm> _vocabulary = new Dictionary<string, NaiveTerm>();
         private List<Review> _trainingReviews;
 
@@ -52,7 +54,7 @@ namespace Sentiment
         public double Score(string text, Label rating)
         {
             List<string> tokens = _tokenizer.Tokenize(text);
-            return logS(tokens, rating);
+            return S(tokens, rating);
         }
 
         private void AddToVocabulary(string word, Label rating)
@@ -72,7 +74,7 @@ namespace Sentiment
             double summation = 0;
             foreach (var word in tokenizedWords)
             {
-                summation += Math.Log(1 + p(word, rating));
+                summation += Math.Log(1-p(word, rating));
             }
             return Math.Log(p(rating)) + summation;
         }
@@ -101,12 +103,12 @@ namespace Sentiment
 
         private double p(Label rating)
         {
-            return N(rating) / _trainingReviews.Count;
+            return (N(rating) + 1) / (_trainingReviews.Count + C_COUNT);
         }
 
         private double p(string word, Label rating)
         {
-            return N(word, rating) / N(rating);
+            return (N(word, rating) + 1) / (N(rating) + _vocabulary.Count);
         }
 
         private double NotP(string word, Label rating)
