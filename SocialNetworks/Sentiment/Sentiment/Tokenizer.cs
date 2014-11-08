@@ -134,7 +134,7 @@ namespace Sentiment
             return Regex.IsMatch(token, negationStopPattern);
         }
 
-        public List<string> Tokenize(string s, bool preserveCase = false)
+        public List<string> Tokenize(string s)
         {
             List<string> tokensList = new List<string>();
             string result;
