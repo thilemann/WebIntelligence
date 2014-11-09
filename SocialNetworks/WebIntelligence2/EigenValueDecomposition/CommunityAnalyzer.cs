@@ -47,8 +47,8 @@ namespace SocialMediaAnalysis
                         if (System.String.CompareOrdinal(review, "* *") == 0) // Ensure that the friend has written a review
                             continue;
 
-                        double pos = _sentimentClassifier.Score(review, Label.Pos);
-                        double neg = _sentimentClassifier.Score(review, Label.Neg);
+                        double pos = _sentimentClassifier.ScoreLog(review, Label.Pos);
+                        double neg = _sentimentClassifier.ScoreLog(review, Label.Neg);
 
                         if (double.IsInfinity(neg))
                             neg = 0;
@@ -73,8 +73,8 @@ namespace SocialMediaAnalysis
                 }
                 else
                 {
-                    scorePos = _sentimentClassifier.Score(user.FullReview, Label.Pos);
-                    scoreNeg = _sentimentClassifier.Score(user.FullReview, Label.Neg);
+                    scorePos = _sentimentClassifier.ScoreLog(user.FullReview, Label.Pos);
+                    scoreNeg = _sentimentClassifier.ScoreLog(user.FullReview, Label.Neg);
 
                     if (double.IsInfinity(scoreNeg))
                         scoreNeg = 0;

@@ -62,6 +62,12 @@ namespace Sentiment
             return S(tokens, rating);
         }
 
+        public double ScoreLog(string text, Label rating)
+        {
+            List<string> tokens = _tokenizer.Tokenize(text);
+            return logS(tokens, rating);
+        }
+
         private void AddToVocabulary(string word, Label rating)
         {
             if (_vocabulary.ContainsKey(word))
@@ -79,7 +85,7 @@ namespace Sentiment
             double summation = 0;
             foreach (var word in tokenizedWords)
             {
-                summation += Math.Log(1-p(word, rating));
+                summation += Math.Log(p(word, rating));
             }
             return Math.Log(p(rating)) + summation;
         }
@@ -109,11 +115,13 @@ namespace Sentiment
         private double p(Label rating)
         {
             return (N(rating) + 1) / (_trainingReviews.Count + C_COUNT);
+            //return N(rating) / _trainingReviews.Count;
         }
 
         private double p(string word, Label rating)
         {
             return (N(word, rating) + 1) / (N(rating) + _vocabulary.Count);
+            //return N(word, rating) / N(rating);
         }
 
         private double NotP(string word, Label rating)

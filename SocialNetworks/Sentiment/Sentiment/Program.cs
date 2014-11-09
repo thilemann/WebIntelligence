@@ -12,6 +12,8 @@ namespace Sentiment
     {   
         public static void Main()
         {
+            double averageLog = 0;
+            double average = 0;
             Console.WriteLine("Started parsing");
             TestDataParser parser = new TestDataParser("Resources/SentimentTrainingData.txt");
             parser.Parse();
@@ -50,12 +52,24 @@ namespace Sentiment
                     trainReviews.AddRange(folds[i]);
                 }
                 classifier.Train(trainReviews);
+                int correctLog = 0;
                 int correct = 0;
                 foreach (var testReview in testReviews)
                 {
+                    double posScoreLog = classifier.ScoreLog(testReview.Summary + testReview.Text, Label.Pos);
+                    double negScoreLog = classifier.ScoreLog(testReview.Summary + testReview.Text, Label.Neg);
+                    Label calculatedLabel;
+                    if (posScoreLog > negScoreLog)
+                        calculatedLabel = Label.Pos;
+                    else
+                        calculatedLabel = Label.Neg;
+
+                    if (calculatedLabel == testReview.Rating)
+                        correctLog++;
+
                     double posScore = classifier.Score(testReview.Summary + testReview.Text, Label.Pos);
                     double negScore = classifier.Score(testReview.Summary + testReview.Text, Label.Neg);
-                    Label calculatedLabel;
+                    
                     if (posScore > negScore)
                         calculatedLabel = Label.Pos;
                     else
@@ -64,8 +78,12 @@ namespace Sentiment
                     if (calculatedLabel == testReview.Rating)
                         correct++;
                 }
-                Console.WriteLine("Test fold {0}: {1} / {2}", j, correct, testReviews.Count);
+                averageLog += ((double)correctLog)/testReviews.Count;
+                Console.WriteLine("[LogS]\tTest fold {0}: {1} / {2} = {3}", j, correctLog, testReviews.Count, ((double)correctLog)/testReviews.Count);
+                Console.WriteLine("[S]\tTest fold {0}: {1} / {2} = {3}", j, correct, testReviews.Count, ((double)correct) / testReviews.Count);
             }
+            Console.WriteLine("[LogS]\tAverage: " + averageLog * 100);
+            Console.WriteLine("[S]\tAverage: " + average * 100);
             Console.ReadLine();
         }
 
