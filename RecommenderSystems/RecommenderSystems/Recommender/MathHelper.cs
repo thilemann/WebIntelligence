@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.LinearAlgebra;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
+using MathNet.Numerics.LinearAlgebra.Storage;
 
 namespace Recommender
 {
@@ -25,7 +26,7 @@ namespace Recommender
             SparseVector meanVector = new SparseVector(matrix.ColumnCount);
             for (int i = 0; i < matrix.ColumnCount; i++)
             {
-                SparseVector column = new SparseVector(matrix.Column(i));
+                SparseVector column = new SparseVector(SparseVectorStorage<double>.OfVector(matrix.Column(i).Storage));
                 double elements = column.NonZerosCount;
                 if (elements > 0)
                 {
@@ -46,7 +47,7 @@ namespace Recommender
             SparseVector meanVector = new SparseVector(matrix.RowCount);
             for (int i = 0; i < matrix.RowCount; i++)
             {
-                SparseVector row = new SparseVector(matrix.Row(i));
+                SparseVector row = new SparseVector(SparseVectorStorage<double>.OfVector(matrix.Row(i).Storage));
                 double elements = row.NonZerosCount;
                 if (elements > 0)
                 {

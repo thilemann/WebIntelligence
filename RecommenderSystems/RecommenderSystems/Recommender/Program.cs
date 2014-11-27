@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra.Double;
-using MathNet.Numerics.LinearAlgebra.Generic;
 
 namespace Recommender
 {
@@ -14,6 +13,7 @@ namespace Recommender
     {
         static void Main(string[] args)
         {
+            Control.UseNativeMKL();
             bool readFromFile = true;
 
             if (!readFromFile)
